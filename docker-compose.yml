@@ -1,2 +1,41 @@
 version: 2.36
 
+name: camagru
+
+services:
+  Model:
+    container_name: Model
+    env_file: .env
+    build:
+
+      docker_inline: 
+        FROM	node:latest
+
+        EXPOSE	${SERV_PORT}
+        ADD		${SERVF}
+
+        RUN		apt-get update && apt-get install vim -y  
+
+        CMD 	["node", ${SERV_FILE_NAME}]
+      context: ./Model
+    restart: always
+    volumes:
+      - mysql:/var/lib/mysql
+    networks:
+      - project
+
+  View:
+    container_name: View
+    build: ./View
+    restart: always
+  Controller:
+
+
+volumes:
+  mysql:
+    name: mysql
+    type: bind
+
+networks:
+  project:
+    driver: bridge

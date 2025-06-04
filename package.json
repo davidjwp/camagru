@@ -11,5 +11,8 @@
     "url": "git@vogsphere.42paris.fr:vogsphere/intra-uuid-445a2e77-3a53-4296-a05a-befdd57da025-6589927-djacobs"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "getenv": "^2.0.0"
+  }
 }
