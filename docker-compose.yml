@@ -1,41 +1,61 @@
-version: 2.36
-
 name: camagru
 
 services:
-  Model:
-    container_name: Model
+  # model:
+  #   container_name: model
+  #   image: mysql:latest
+    
+  #   env_file: .env
+  #   # build:
+  #   #   context: ./model
+  #   #   dockerfile_inline: 
+  #   #     FROM  mysql:latest
+
+  #   #     CMD ["mysql", ]
+  #   volumes:
+  #     - mysql:/var/lib/mysql
+  #   networks:
+  #     - camagru_net
+
+  # view:
+  #   container_name: view
+  #   env_file: .env
+  #   build: 
+  #     context: ./view
+  #     dockerfile_inline:
+  #       FROM  debian:latest
+
+  #       CMD ["echo", "hello"]
+
+  #   restart: always
+  #   networks:
+  #     - camagru_net
+
+  controller:
+    container_name: controller
     env_file: .env
     build:
-
-      docker_inline: 
-        FROM	node:latest
+      context: ./controller
+      dockerfile_inline: |
+        FROM    node:24-alpine
 
         EXPOSE	${SERV_PORT}
-        ADD		${SERVF}
+        ADD     ${SERVF} .
 
-        RUN		apt-get update && apt-get install vim -y  
+        RUN   apk update && apk upgrade && apk fetch vim
 
-        CMD 	["node", ${SERV_FILE_NAME}]
-      context: ./Model
+        CMD 	["node", "${SERVF}"]
     restart: always
-    volumes:
-      - mysql:/var/lib/mysql
+    ports:
+      - 8000
     networks:
-      - project
-
-  View:
-    container_name: View
-    build: ./View
-    restart: always
-  Controller:
+      - camagru_net
 
 
-volumes:
-  mysql:
-    name: mysql
-    type: bind
+# volumes:
+#   mysql:
+#     name: mysql
 
 networks:
-  project:
+  camagru_net:
     driver: bridge
