@@ -39,7 +39,6 @@ services:
       dockerfile_inline: |
         FROM    node:24-alpine
 
-        EXPOSE	${SERV_PORT}
         ADD     ${SERVF} .
 
         RUN   apk update && apk upgrade && apk fetch vim
@@ -47,7 +46,7 @@ services:
         CMD 	["node", "${SERVF}"]
     restart: always
     ports:
-      - 8000
+      - "${SERV_PORT}:${SERV_PORT}"
     networks:
       - camagru_net
 

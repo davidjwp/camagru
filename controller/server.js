@@ -1,16 +1,12 @@
 const http = require('http');
-const fs = require('fs');
 
 const hostname = process.env.SERV_ADDRESS;
 const port = process.env.SERV_PORT;
 
 const serv = http.createServer((req, res) => {
-    fs.readFile('./index.html', function (err, data) {
-        if (err) throw "woopsie";
-        res.writeHead(200, 'ok read');
-        res.write(data);
-        res.end();
-    });
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/plain');
+    res.end('Hey there this is a new one\n');
 });
 
 serv.listen(port, hostname, () => {
