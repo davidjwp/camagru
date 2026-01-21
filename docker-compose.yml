@@ -17,26 +17,26 @@ services:
   #   networks:
   #     - camagru_net
 
-  # view:
-  #   container_name: view
-  #   env_file: .env
-  #   build: 
-  #     context: ./view
-  #     dockerfile_inline:
-  #       FROM  debian:latest
+  view:
+    container_name: view
+    env_file: .env
+    build:
+      context: ./view
+      dockerfile_inline:
+        FROM  nginx:alpine
 
-  #       CMD ["echo", "hello"]
-
-  #   restart: always
-  #   networks:
-  #     - camagru_net
+        COPY index.html .
+        
+    restart: always
+    networks:
+      - camagru_net
 
   controller:
     container_name: controller
     env_file: .env
     build:
       context: ./controller
-      dockerfile_inline: |
+      dockerfile_inline:
         FROM    node:24-alpine
 
         ADD     ${SERVF} .
