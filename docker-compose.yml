@@ -1,42 +1,45 @@
 name: camagru
 
 services:
-  # model:
-  #   container_name: model
-  #   image: mysql:latest
-    
-  #   env_file: .env
-  #   # build:
-  #   #   context: ./model
-  #   #   dockerfile_inline: 
-  #   #     FROM  mysql:latest
+  model:
+    container_name: model
+    env_file: .env
+    build:
+      context: ./model
+      dockerfile_inline: 
+        FROM  mysql:latest
 
-  #   #     CMD ["mysql", ]
-  #   volumes:
-  #     - mysql:/var/lib/mysql
-  #   networks:
-  #     - camagru_net
+        CMD ["mysqld", "--console"]
+    volumes:
+      - mysql:/var/lib/mysql
+    networks:
+      - camagru_net
 
-  # view:
-  #   container_name: view
-  #   env_file: .env
-  #   build: 
-  #     context: ./view
-  #     dockerfile_inline:
-  #       FROM  debian:latest
+  view:
+    container_name: view
+    env_file: .env
+    build: 
+      context: ./view
+      dockerfile_inline:
+        FROM  node:22-alpine
 
-  #       CMD ["echo", "hello"]
+        RUN   apk update && apk upgrade && apk fetch vim
 
-  #   restart: always
-  #   networks:
-  #     - camagru_net
+        RUN npm install
+
+
+    restart: always
+    volumes:
+      - view:/home/davidjwp/view
+    networks:
+      - camagru_net
 
   controller:
     container_name: controller
     env_file: .env
     build:
       context: ./controller
-      dockerfile_inline: |
+      dockerfile_inline:
         FROM    node:24-alpine
 
         ADD     ${SERVF} .
@@ -45,15 +48,23 @@ services:
 
         CMD 	["node", "${SERVF}"]
     restart: always
+    volumes:
+      - controller:/home/davidjwp/camagru
     ports:
       - "${SERV_PORT}:${SERV_PORT}"
     networks:
       - camagru_net
 
 
-# volumes:
-#   mysql:
-#     name: mysql
+volumes:
+  mysql:
+    name: mysql
+  view:
+    name: view
+# this is temporary for work, in the final version controller copies the local file 
+# into the container
+  controller:
+    name: controller
 
 networks:
   camagru_net:
