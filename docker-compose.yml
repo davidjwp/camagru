@@ -18,19 +18,14 @@ services:
   view:
     container_name: view
     env_file: .env
-    build: 
+    build:
       context: ./view
       dockerfile_inline:
-        FROM  node:22-alpine
+        FROM  nginx:alpine
 
-        RUN   apk update && apk upgrade && apk fetch vim
-
-        RUN npm install
-
-
+        COPY index.html .
+        
     restart: always
-    volumes:
-      - view:/home/davidjwp/view
     networks:
       - camagru_net
 
