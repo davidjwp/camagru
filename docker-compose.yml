@@ -15,19 +15,23 @@ services:
     networks:
       - camagru_net
 
-  view:
-    container_name: view
-    env_file: .env
-    build:
-      context: ./view
-      dockerfile_inline:
-        FROM  nginx:alpine
+  # view:
+  #   container_name: view
+  #   env_file: .env
+  #   build:
+  #     context: ./view
+  #     dockerfile_inline:
+  #       FROM  nginx:alpine
 
-        COPY index.html .
-        
-    restart: always
-    networks:
-      - camagru_net
+  #       COPY index.html .
+  #   restart: always
+  #   networks:
+  #     - camagru_net
+  #   volumes:
+  #     - type: bind
+  #       source: ./static
+  #       target: /static
+
 
   controller:
     container_name: controller
@@ -37,14 +41,23 @@ services:
       dockerfile_inline:
         FROM    node:24-alpine
 
-        ADD     ${SERVF} .
+        ARG		SERV_PORT=${SERV_PORT} 
+        EXPOSE	${SERV_PORT}
+        ARG		SERV_ADDRESS=${SERV_ADDRESS}
+        ARG		SERVF=${SERVF}
 
         RUN   apk update && apk upgrade && apk fetch vim
 
         CMD 	["node", "${SERVF}"]
     restart: always
     volumes:
-      - controller:/home/davidjwp/camagru
+      - type: bind
+        source: ./controller
+        target: /controller
+      # - controller:/home/davidjwp/camagru
+      - type: bind
+        source: ./view
+        target: /view
     ports:
       - "${SERV_PORT}:${SERV_PORT}"
     networks:
@@ -54,8 +67,8 @@ services:
 volumes:
   mysql:
     name: mysql
-  view:
-    name: view
+  # view:
+  #   name: view
 # this is temporary for work, in the final version controller copies the local file 
 # into the container
   controller:
