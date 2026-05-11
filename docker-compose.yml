@@ -15,24 +15,6 @@ services:
     networks:
       - camagru_net
 
-  # view:
-  #   container_name: view
-  #   env_file: .env
-  #   build:
-  #     context: ./view
-  #     dockerfile_inline:
-  #       FROM  nginx:alpine
-
-  #       COPY index.html .
-  #   restart: always
-  #   networks:
-  #     - camagru_net
-  #   volumes:
-  #     - type: bind
-  #       source: ./static
-  #       target: /static
-
-
   controller:
     container_name: controller
     env_file: .env
