@@ -32,6 +32,14 @@ services:
 
         CMD 	["node", "${SERVF}"]
     restart: always
+    develop:
+      watch:
+        - action: sync
+          path: ../view
+          target: /view
+        - action: sync
+          path: ./controller
+          target: /controller
     volumes:
       - type: bind
         source: ./controller
