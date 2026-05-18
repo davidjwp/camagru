@@ -1,19 +1,19 @@
 name: camagru
 
 services:
-  model:
-    container_name: model
-    env_file: .env
-    build:
-      context: ./model
-      dockerfile_inline: 
-        FROM  mysql:latest
+  # model:
+  #   container_name: model
+  #   env_file: .env
+  #   build:
+  #     context: ./model
+  #     dockerfile_inline: 
+  #       FROM  mysql:latest
 
-        CMD ["mysqld", "--console"]
-    volumes:
-      - mysql:/var/lib/mysql
-    networks:
-      - camagru_net
+  #       CMD ["mysqld", "--console"]
+  #   volumes:
+  #     - mysql:/var/lib/mysql
+  #   networks:
+  #     - camagru_net
 
   controller:
     container_name: controller
@@ -21,16 +21,15 @@ services:
     build:
       context: ./controller
       dockerfile_inline:
-        FROM    node:24-alpine
+        FROM    php:8.2-apache
 
         ARG		SERV_PORT=${SERV_PORT} 
         EXPOSE	${SERV_PORT}
         ARG		SERV_ADDRESS=${SERV_ADDRESS}
         ARG		SERVF=${SERVF}
 
-        RUN   apk update && apk upgrade && apk fetch vim
-
-        CMD 	["node", "${SERVF}"]
+        RUN apt-get update && apt-get upgrade -y && apt-get install -y vim libpng-dev libjpeg-dev && docker-php-ext-configure gd --with-jpeg && docker-php-ext-install gd pdo pdo_mysql
+      
     restart: always
     develop:
       watch:

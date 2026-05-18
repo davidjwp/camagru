@@ -6,27 +6,25 @@ const path = require('node:path');
 const hostname = process.env.SERV_ADDRESS;
 const port = process.env.SERV_PORT;
 
-const dir = '/view/template.html';
-const reactDir = 'view/static/at.js';
-let FilRead;
-let cType = 'text/html';
+const reactDir = '/view/static/at.js';
 
 const serv = http.createServer((req, res) => {
+    console.log(`req.url = ${req.url}`);
+    
+    let conType = 'text/html';
+    let dir = '/view/template.html';
+    
     if (req.url == reactDir) {
-        FilRead = dir;
-        cType = 'text/javascript';
+        conType = 'text/javascript';
+        dir = reactDir;
     }
-    else FilRead = reactDir;
-
-    fs.readFile(FilRead, (err, data)=> {
+    
+    fs.readFile(dir, (err, data)=> {
         if (err) {console.log(err.message)
             res.writeHead(500, {'content-Type': 'text/plain'});
-            res.end();
+            return res.end();
         };
-        res.writeHead(200, {'Content-Type': cType});
-        // console.log(req.url);
-        // console.log(cType);
-        // console.log(dir);
+        res.writeHead(200, {'Content-Type': conType});
         res.end(data);
     });
 });
