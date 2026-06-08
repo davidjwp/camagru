@@ -19,34 +19,23 @@ services:
     container_name: controller
     env_file: .env
     build:
-      context: ./controller
-      dockerfile_inline:
-        FROM    php:8.2-apache
-
-        ARG		SERV_PORT=${SERV_PORT} 
-        EXPOSE	${SERV_PORT}
-        ARG		SERV_ADDRESS=${SERV_ADDRESS}
-        ARG		SERVF=${SERVF}
-
-        RUN apt-get update && apt-get upgrade -y && apt-get install -y vim libpng-dev libjpeg-dev && docker-php-ext-configure gd --with-jpeg && docker-php-ext-install gd pdo pdo_mysql
-      
+      args: 
+        SERV_PORT: ${SERV_PORT}
+        SERV_ADDRESS: ${SERV_ADDRESS}
+      context: ./controller      
     restart: always
     develop:
       watch:
         - action: sync
           path: ../view
-          target: /view
+          target: /var/www/html
         - action: sync
-          path: ./controller
-          target: /controller
+          path: ./controller/etc
+          target: /etc
     volumes:
       - type: bind
-        source: ./controller
-        target: /controller
-      # - controller:/home/davidjwp/camagru
-      - type: bind
-        source: ./view
-        target: /view
+        source: ./controller/etc
+        target: /var/www/html
     ports:
       - "${SERV_PORT}:${SERV_PORT}"
     networks:
