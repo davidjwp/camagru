@@ -7,9 +7,28 @@ EXPOSE	${SERV_PORT}
 ARG		SERV_ADDRESS=${SERV_ADDRESS}
 ARG		SERVF=${SERVF}
 
-RUN echo "ServerName ${SERV_ADDRESS}:${SERV_PORT}" >> /etc/apache2/apache2.conf 
-RUN echo "Listen ${SERV_ADDRESS}:${SERV_PORT}" >> /etc/apache2/apache2.conf
+RUN echo "ServerName ${SERV_ADDRESS}}" >> /etc/apache2/apache2.conf 
+RUN echo "Listen ${SERV_PORT}" >> /etc/apache2/apache2.conf
+RUN cat >> /etc/apache2/apache2.conf << EOF
+DocumentRoot /var/www/html
+DirectoryIndex index.php index.html
+<Directory /var/www/html>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+</Directory>
+EOF
+RUN cat > /etc/apache2/sites-enabled/000-default.conf << EOF
+<VirtualHost *:${SERV_PORT}>
+	ServerName ${SERV_ADDRESS}
+	DirectoryIndex index.php index.html
 
-RUN apt-get update && apt-get upgrade -y && apt-get install -y vim libpng-dev libjpeg-dev && docker-php-ext-configure gd --with-jpeg
+	ErrorLog /var/log/apache2/error.log
+	CustomLog /var/log/apache2/access.log combined
+</VirtualHost>
+EOF
+
+
+RUN apt-get update && apt-get upgrade -y && apt-get install -y vim iproute2 libpng-dev libjpeg-dev && docker-php-ext-configure gd --with-jpeg
 
 CMD ["apache2ctl", "-D", "FOREGROUND"]

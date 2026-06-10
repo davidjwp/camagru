@@ -22,19 +22,16 @@ services:
       args: 
         SERV_PORT: ${SERV_PORT}
         SERV_ADDRESS: ${SERV_ADDRESS}
-      context: ./controller      
+      context: ./controller
     restart: always
     develop:
       watch:
         - action: sync
           path: ../view
           target: /var/www/html
-        - action: sync
-          path: ./controller/etc
-          target: /etc
     volumes:
       - type: bind
-        source: ./controller/etc
+        source: ./controller/html
         target: /var/www/html
     ports:
       - "${SERV_PORT}:${SERV_PORT}"
