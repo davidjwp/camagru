@@ -29,6 +29,8 @@ RUN cat > /etc/apache2/sites-enabled/000-default.conf << EOF
 EOF
 
 
-RUN apt-get update && apt-get upgrade -y && apt-get install -y vim iproute2 libpng-dev libjpeg-dev && docker-php-ext-configure gd --with-jpeg
+RUN apt-get update && apt-get upgrade -y && apt-get install -y vim iproute2 libpng-dev libjpeg-dev
+RUN docker-php-ext-configure gd --with-jpeg
+RUN docker-php-ext-configure pdo pdo_mysql
 
 CMD ["apache2ctl", "-D", "FOREGROUND"]

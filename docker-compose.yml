@@ -1,19 +1,14 @@
 name: camagru
 
 services:
-  # model:
-  #   container_name: model
-  #   env_file: .env
-  #   build:
-  #     context: ./model
-  #     dockerfile_inline: 
-  #       FROM  mysql:latest
-
-  #       CMD ["mysqld", "--console"]
-  #   volumes:
-  #     - mysql:/var/lib/mysql
-  #   networks:
-  #     - camagru_net
+  model:
+    container_name: model
+    env_file: .env
+    image: mysql:latest
+    volumes:
+      - mysql:/var/lib/mysql
+    networks:
+      - camagru_net
 
   controller:
     container_name: controller
