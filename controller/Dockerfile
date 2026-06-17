@@ -31,6 +31,6 @@ EOF
 
 RUN apt-get update && apt-get upgrade -y && apt-get install -y vim iproute2 libpng-dev libjpeg-dev
 RUN docker-php-ext-configure gd --with-jpeg
-RUN docker-php-ext-configure pdo pdo_mysql
+RUN docker-php-ext-install pdo pdo_mysql
 
 CMD ["apache2ctl", "-D", "FOREGROUND"]
