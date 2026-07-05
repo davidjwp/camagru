@@ -7,6 +7,9 @@ EXPOSE	${SERV_PORT}
 ARG		SERV_ADDRESS=${SERV_ADDRESS}
 ARG		SERVF=${SERVF}
 
+COPY php.ini /usr/local/etc/php/conf.d/mail.ini
+COPY ssmtp.conf /etc/ssmtp/ssmtp.conf
+
 RUN echo "ServerName ${SERV_ADDRESS}}" >> /etc/apache2/apache2.conf 
 RUN echo "Listen ${SERV_PORT}" >> /etc/apache2/apache2.conf
 RUN cat >> /etc/apache2/apache2.conf << EOF
@@ -28,8 +31,8 @@ RUN cat > /etc/apache2/sites-enabled/000-default.conf << EOF
 </VirtualHost>
 EOF
 
-
 RUN apt-get update && apt-get upgrade -y && apt-get install -y vim iproute2 libpng-dev libjpeg-dev
+RUN apt-get install -y ssmtp inetutils-ping 
 RUN docker-php-ext-configure gd --with-jpeg
 RUN docker-php-ext-install pdo pdo_mysql
 
