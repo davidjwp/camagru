@@ -1,6 +1,5 @@
 <?php
 	include ("sign_up.html");
-	var_dump($_POST);
 	
 	function alert($msg) {exit ("<script>alert('Error: ".$msg."');</script>");}
 	
