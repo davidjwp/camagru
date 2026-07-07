@@ -58,11 +58,6 @@
 			]);
 			sendVerificationMail($token);
 		}
-		else if ($user && !$user['is_verified']) {
-			$stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username OR email = :email");
-			$stmt->execute([':username' => $_POST['username'],':email'=> $_POST['email']]);
-			$user = $stmt->fetch();
-			sendVerificationMail($user['verification_token']);
-		}
+		else if (!$user['is_verified']) sendVerificationMail($token);
 		else alert("user already exists");
 	}

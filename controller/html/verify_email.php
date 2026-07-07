@@ -11,7 +11,7 @@
 		"camagru_admin_pass"
 	);
 	$stmt = $pdo->prepare("SELECT * FROM users WHERE verification_token = :token AND is_verified = 0");
-	$stmt->execute([':token' => hex2bin($token)]);
+	$stmt->execute([':token' => $token]);
 	$user = $stmt->fetch();
 	
 	if (!$user) { 
