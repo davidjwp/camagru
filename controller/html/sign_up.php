@@ -3,6 +3,22 @@
 	
 	function alert($msg) {exit ("<script>alert('Error: ".$msg."');</script>");}
 	
+	function sendVerificationMail($token) {
+		/*send validation link to user email*/
+		$validate_hash = hash("sha256", $token);
+
+		$LINK = "http://$_SERVER[HTTP_HOST]/verify_email.php?token=" . bin2hex($token);
+		
+		$to = $_POST["email"];
+		$subject = "Camagru email verification";
+		$message = "validate signup with this link\n\n\t$LINK";
+		$result = mail($to, $subject, $message);
+		if (!$result) {
+			alert("Mail failed");
+			error_log(error_get_last());
+		}
+	}
+
 	if (!empty($_POST)) {
 		$ver = 0;
 		if (!empty($_POST['username'])) $ver |= 1;
@@ -40,19 +56,13 @@
 				':password' => password_hash($_POST['password'], PASSWORD_DEFAULT),
 				':token' => bin2hex($token)
 			]);
-			/*send validation link to user email*/
-			$validate_hash = hash("sha256", $token);
-
-			$LINK = "http://$_SERVER[HTTP_HOST]/verify_email.php?token=" . bin2hex($token);
-			
-			$to = $_POST["email"];
-			$subject = "Camagru email verification";
-			$message = "validate signup with this link\n\n\t$LINK";
-			$result = mail($to, $subject, $message);
-			if (!$result) {
-				alert("Mail failed");
-				error_log(error_get_last());
-			}
+			sendVerificationMail($token);
+		}
+		else if ($user && !$user['is_verified']) {
+			$stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username OR email = :email");
+			$stmt->execute([':username' => $_POST['username'],':email'=> $_POST['email']]);
+			$user = $stmt->fetch();
+			sendVerificationMail($user['verification_token']);
 		}
 		else alert("user already exists");
 	}
