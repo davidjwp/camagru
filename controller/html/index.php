@@ -14,7 +14,7 @@
 		$user = $stmt->fetch();
 		
 		var_dump($user);
-		if ($user) {
+		if ($user && password_verify($_POST['password'], $user['password'])) {
 			session_start();
 			$_SESSION['user'] = $user;
 			header('location: /home.php');
