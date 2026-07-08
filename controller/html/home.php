@@ -1,1 +1,4 @@
 <?php
+	include ("home.html");
+
+	
