@@ -2,17 +2,112 @@
 <html>
 <head>
 	<style>
-		.body {
-			background-color: beige;
-		}
-	</style>
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* HEADER */
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        /* MAIN CONTENT AREA (Body + Sidebar) */
+        .main-content {
+            display: flex;
+            flex: 1;
+            gap: 0;
+        }
+
+        /* BODY (Main content) */
+        .body-content {
+            flex: 1;
+            padding: 20px;
+            background: #ecf0f1;
+            min-height: 400px;
+        }
+
+        /* RIGHT SIDEBAR */
+        .sidebar {
+            width: 250px;
+            background: #34495e;
+            color: white;
+            padding: 20px;
+            flex-shrink: 0;
+        }
+
+        /* FOOTER */
+        .footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            flex-shrink: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                order: 2;
+            }
+            .body-content {
+                order: 1;
+            }
+        }
+    </style>
 </head>
-<header>
-	this is a header
-</header>
 <body>
-	<button onclick="window.location.href='profile.php'">profile</button>
-	<button onclick="">disconnect</button>
-	<h1>body</h1>
+
+    <!-- HEADER -->
+    <header class="header">
+        <h1>My Website</h1>
+        <p>This is the header</p>
+		<button id="profile_button" onclick="window.location.href='profile.php'">profile</button>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <!-- BODY (Main content) -->
+        <main class="body-content">
+            <h2>Main Content Area</h2>
+            <p>This is the main body content.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            <p>You can put your signup/signin forms here.</p>
+        </main>
+
+        <!-- RIGHT SIDEBAR -->
+        <aside class="sidebar">
+            <h3>Sidebar</h3>
+            <ul>
+                <li><a href="#" style="color:white;">Link 1</a></li>
+                <li><a href="#" style="color:white;">Link 2</a></li>
+                <li><a href="#" style="color:white;">Link 3</a></li>
+            </ul>
+            <p>Recent posts, ads, or info.</p>
+        </aside>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>&copy; 2026 My Website. All rights reserved.</p>
+    </footer>
+
 </body>
 </html>
