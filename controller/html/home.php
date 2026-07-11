@@ -3,6 +3,8 @@
 
 	$doc = new DOMDocument;
 	$doc->loadHTMLFile('home.html');
-
-	$doc->getElementById('profile_button')->innerHTML = "HEYYEY";
-	var_dump($button);
+	
+	$xpath = new DOMXPath($doc);
+	// $doc->getElementById('profile_button')->innerHTML = "HEYYEY";
+	// var_dump($button);
+	echo $doc->saveHTML();
