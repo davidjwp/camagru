@@ -10,7 +10,7 @@ ARG		SERVF=${SERVF}
 COPY php.ini /usr/local/etc/php/conf.d/mail.ini
 COPY ssmtp.conf /etc/ssmtp/ssmtp.conf
 
-RUN echo "ServerName ${SERV_ADDRESS}}" >> /etc/apache2/apache2.conf 
+RUN echo "ServerName ${SERV_ADDRESS}" >> /etc/apache2/apache2.conf 
 RUN echo "Listen ${SERV_PORT}" >> /etc/apache2/apache2.conf
 RUN cat >> /etc/apache2/apache2.conf << EOF
 DocumentRoot /var/www/html
@@ -23,11 +23,12 @@ DirectoryIndex index.php index.html
 EOF
 RUN cat > /etc/apache2/sites-enabled/000-default.conf << EOF
 <VirtualHost *:${SERV_PORT}>
-	ServerName ${SERV_ADDRESS}
-	DirectoryIndex index.php index.html
+    ServerName ${SERV_ADDRESS}
+    DocumentRoot /var/www/html
+    DirectoryIndex index.php index.html
 
-	ErrorLog /var/log/apache2/error.log
-	CustomLog /var/log/apache2/access.log combined
+    ErrorLog /var/log/apache2/error.log
+    CustomLog /var/log/apache2/access.log combined
 </VirtualHost>
 EOF
 

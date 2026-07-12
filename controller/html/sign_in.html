@@ -1,14 +1,26 @@
 <!DOCTYPE html>
 <html>
+	<head>
+		<style>
+			/* ::placeholder {
+				color: #999;
+				font-size: 14px;
+				font-style: italic;
+			} */
+			 body {
+				font-family: Arial, Helvetica, sans-serif;
+				
+			 }
+		</style>
+	</head>
 	<body>
-		<form action="" method="post">
-			<label>Username</label>
-			<input type="text" name="username"><br>
-			<label>Password</label>
-			<input type="password" name="password"><br>
+		<form action="/index.php" method="post">
+			<input type="text" name="username" placeholder="username"><br>
+			<input type="password" name="password" placeholder="password"><br>
 		<br>
 			<input type="submit" value="login">
 		</form>
 		<button onclick="window.location.href='sign_up.php'">Sign up</button>
+
 	</body>
 </html>
