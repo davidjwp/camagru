@@ -41,8 +41,8 @@
 				':password' => password_hash($_POST['password'], PASSWORD_DEFAULT),
 				':token' => bin2hex($token)
 			]);
-			sendMail($token, "verification");
+			sendMail($token, "verification", $_POST['email']);
 		}
-		else if (!$user['is_verified']) sendMail($token, "verification");
+		else if (!$user['is_verified']) sendMail($token, "verification", $_POST["email"]);
 		else alert("user already exists");
 	}

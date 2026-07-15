@@ -2,24 +2,37 @@
 <html>
 	<head>
 		<style>
-			div {
+			.cui {
 				font-family: Arial, Helvetica, sans-serif;
 				color:rgb(125, 125, 125)
+			}
+			
+			#welcome_header {
+				font-family: Arial, Helvetica, sans-serif;
+				font-size: 150%;
+			}
+
+			#email_info {
+				font-family: Arial, Helvetica, sans-serif;
 			}
 		</style>
 	</head>
 	<body>
+		<div id="welcome_header"></div>
 		<a href="/home.php">home</a>
 		<form action="" method="post">
 			<button name="disconnect" value="disconnect">disconnect</button>
 		</form>
 		<br>
-		<div>change user info</div>
+		<div class="cui">change user info</div>
 		<form action="/profile.php" method="post">
 			<input type="text" name="username" placeholder="new username"><br>
 			<input type="text" name="email" placeholder="new email"><br>
 			<input type="submit" value="confirm">
 		</form>
-		<button name="password-reset" onclick="window.location.href = ">
+		<div id="email_info"></div>
+		<form action="/profile.php" method="post">
+			<input type="submit" name="reset_password" value="reset password">
+		</form>
 	</body>
 </html>

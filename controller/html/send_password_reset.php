@@ -23,7 +23,7 @@
 			':token' => bin2hex($token),
 			':id' => $user['id']
 		]);
-		sendMail($token, "password_reset");
+		sendMail($token, "password_reset", $_POST["email"]);
 	}
 			
 	include 'send_password_reset.html';

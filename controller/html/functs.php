@@ -1,8 +1,4 @@
 <?php
-	class Camagru {
-		
-		public function check
-	}
 	
 	function check_session($user){
 		if (!$user) {
@@ -13,13 +9,11 @@
 
 	function alert($msg) { exit ("<script>alert('Error: ".$msg."');</script>");}
 
-	function sendMail($token, $type) {
+	function sendMail($token, $type, $to) {
 
 		$l = $type == "verification" ? "verify_email.php" : "password_reset.php";
 
 		$LINK = "http://$_SERVER[HTTP_HOST]/$l?token=" . bin2hex($token);
-		
-		$to = $_POST["email"];
 		
 		switch ($type) {
 			case "verification":
