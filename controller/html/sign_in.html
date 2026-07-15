@@ -2,25 +2,29 @@
 <html>
 	<head>
 		<style>
-			/* ::placeholder {
-				color: #999;
-				font-size: 14px;
-				font-style: italic;
-			} */
 			 body {
 				font-family: Arial, Helvetica, sans-serif;
-				
+				background: #f5f5f5;
+				display: flex;			
+			 }
+			 a { 
+				font-family: Arial, Helvetica, sans-serif;
+				text-decoration: none;
+				font-size: 80%;
 			 }
 		</style>
 	</head>
 	<body>
-		<form action="/index.php" method="post">
-			<input type="text" name="username" placeholder="username"><br>
-			<input type="password" name="password" placeholder="password"><br>
-		<br>
-			<input type="submit" value="login">
-		</form>
-		<button onclick="window.location.href='sign_up.php'">Sign up</button>
+		<div>
+			<form action="/index.php" method="post">
+				<input type="text" name="username" placeholder="username"><br>
+				<input type="password" name="password" placeholder="password"><br>
+				<a href="forgotten-password.php">forgot my password</a>
+				<br>
+				<input type="submit" value="login">
+			</form>
+			<button onclick="window.location.href='sign_up.php'">Sign up</button>
+		</div>
 
 	</body>
 </html>

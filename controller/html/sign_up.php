@@ -1,24 +1,7 @@
 <?php
+	require_once 'functs.php';
 	include ("sign_up.html");
 	
-	function alert($msg) {exit ("<script>alert('Error: ".$msg."');</script>");}
-	
-	function sendVerificationMail($token) {
-		/*send validation link to user email*/
-		$validate_hash = hash("sha256", $token);
-
-		$LINK = "http://$_SERVER[HTTP_HOST]/verify_email.php?token=" . bin2hex($token);
-		
-		$to = $_POST["email"];
-		$subject = "Camagru email verification";
-		$message = "validate signup with this link\n\n\t$LINK";
-		$result = mail($to, $subject, $message);
-		if (!$result) {
-			alert("Mail failed");
-			error_log(error_get_last());
-		}
-	}
-
 	if (!empty($_POST)) {
 		$ver = 0;
 		if (!empty($_POST['username'])) $ver |= 1;
@@ -34,7 +17,9 @@
 		!preg_match('/[!@#$%^&*(){}\-_=+?\/.>,<;:]/', $_POST['password']) ||
 		!preg_match('/[A-Z]/', $_POST['password']))
 			alert("password must contain at least one special char and one upper case");
-			
+		if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
+    		alert("Invalid email address");
+
 		$pdo = new PDO(
 			"mysql:host=model;dbname=camagru;charset=utf8",
 			"camagru_admin",
