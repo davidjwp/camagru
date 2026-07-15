@@ -29,7 +29,7 @@
 		$token = random_bytes(32);
 
 		/*checks that user exists then insert user row into users table*/
-		$stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username OR email = :email");
+		$stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username AND email = :email");
 		$stmt->execute([':username' => $_POST["username"],':email'=> $_POST['email']]);
 		$user = $stmt->fetch();
 		if (!$user) {
@@ -41,8 +41,8 @@
 				':password' => password_hash($_POST['password'], PASSWORD_DEFAULT),
 				':token' => bin2hex($token)
 			]);
-			sendVerificationMail($token);
+			sendMail($token, "verification");
 		}
-		else if (!$user['is_verified']) sendVerificationMail($token);
+		else if (!$user['is_verified']) sendMail($token, "verification");
 		else alert("user already exists");
 	}

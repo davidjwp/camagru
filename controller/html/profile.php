@@ -6,8 +6,16 @@
 
 	if (isset($_POST["disconnect"])) {
 		session_destroy();
+
 		header("location: /index.php");
 		exit;
 	}
-	
+
+	if (isset($_POST["username"])) {
+
+	}
+	if (isset($_POST["email"])) {
+
+	}
+
 	include("profile.html");

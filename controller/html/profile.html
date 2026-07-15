@@ -1,12 +1,25 @@
 <!DOCTYPE html>
 <html>
 	<head>
-
+		<style>
+			div {
+				font-family: Arial, Helvetica, sans-serif;
+				color:rgb(125, 125, 125)
+			}
+		</style>
 	</head>
 	<body>
 		<a href="/home.php">home</a>
 		<form action="" method="post">
 			<button name="disconnect" value="disconnect">disconnect</button>
 		</form>
+		<br>
+		<div>change user info</div>
+		<form action="/profile.php" method="post">
+			<input type="text" name="username" placeholder="new username"><br>
+			<input type="text" name="email" placeholder="new email"><br>
+			<input type="submit" value="confirm">
+		</form>
+		<button name="password-reset" onclick="window.location.href = ">
 	</body>
 </html>

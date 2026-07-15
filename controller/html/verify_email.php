@@ -15,7 +15,7 @@
 	$user = $stmt->fetch();
 	
 	if (!$user) { 
-		echo 'no user for token foung';
+		echo 'no user for token found';
 		exit;
 	}
 
