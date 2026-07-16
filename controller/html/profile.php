@@ -2,7 +2,12 @@
 	session_start();
 	require_once 'functs.php';
 
-	check_session($_SESSION['user']);
+	/*check session*/
+	if (!isset($_SESSION['user']) || check_session($_SESSION['user'])) {
+		header('location: /index.php');
+		exit;
+	}
+
 	$pdo = new PDO(
 		"mysql:host=model;dbname=camagru;charset=utf8",
 		"camagru_admin",
@@ -18,15 +23,20 @@
 
 	$user = $_SESSION["user"];
 
+	/*check username or email then change them*/
 	$change = ['',''];
 	if (!empty($_POST["username"])) {
-		if (strlen($_POST['username']) < 5 || strlen($_POST['username']) > 20)
-			alert("username at least 5 char long and no longer than 20 chars");
+		if (strlen($_POST['username']) < 5 || strlen($_POST['username']) > 20) exit(
+				"<script>alert('username must be between 5 and 20 chars');
+				window.location.href='/profile.php';</script>"
+			);
 		$change[0] = 'username';
 	}
 	if (!empty($_POST["email"])) {
-		if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
-    		alert("Invalid email address");
+		if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) exit(
+			"<script>alert('Error: "."Invalid email address"."');
+			window.location.href='/profile.php';</script>");
+			header('location: /profile.php');
 		$change[1] = 'email';
 	}
 
@@ -37,18 +47,12 @@
 			$_SESSION['user'][$ch] = $_POST[$ch];
 		}	
 	}
-	
-	// include("profile.html");
 
-	if (isset($_POST['reset_password']) || 
-	!empty($_POST["password1"]) ||
-	!empty($_POST["password2"])) {
-		echo "<br><form action='profile.php' method='post'> 
-			<input type='password' name='password1' placeholder='new password'><br>
-			<input type='password' name='password2' placeholder='confirm new password'><br>
-			<input type='submit' name='submit' value='send'>
-		</form>";
-	}
+	/*append password reset html*/
+	$doc = new DOMDocument();
+	$doc->loadHTMLFile('profile.html');
+
+	if (isset($_POST['reset_password']) || !empty($_POST["password1"]) || !empty($_POST["password2"])) AppendPasswordReset($doc);
 
 	if (!empty($_POST["password1"]) && !empty($_POST["password2"])) {
 		if (strlen($_POST['password1']) < 5 || strlen($_POST['password1']) > 20 ||
@@ -64,8 +68,7 @@
 			':id' => $user['id']
 			]);
 	}
-	$doc = new DOMDocument();
-	$doc->loadHTMLFile('profile.html');
+	
 	
 	// var_dump($_SESSION);
 	$doc->getElementById('welcome_header')->nodeValue = "Welcome ". $_SESSION['user']['username'];
