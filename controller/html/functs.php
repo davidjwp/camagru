@@ -9,6 +9,22 @@
 
 	function alert($msg) { exit ("<script>alert('Error: ".$msg."');</script>");}
 
+	function LoadPosts($doc, $posts) {
+		$target = $doc->getElementById('posts');
+
+		foreach ($posts as $post) {
+			$div = $doc->createElement('div');
+			$div->setAttribute('class','post');
+
+			$img = $doc->createElement('img');
+			// $img->setAttribute("src","/uploads/<?php echo htmlspecialchars($post['image_path']);");
+
+			$p1 = $doc->createElement("p");
+			// $p1->innerText = ;
+			$p1->setAttribute("","");
+		}
+	}
+
 	function AppendPasswordReset($doc) {
 		$target = $doc->getElementById('reset_password');
 		

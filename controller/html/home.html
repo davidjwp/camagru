@@ -89,6 +89,7 @@
     <div class="main-content">
         <!-- BODY (Main content) -->
         <div class="body-content">
+            <div id="posts"></div>
             <h2>Main Content Area</h2>
             <p>This is the main body content.</p>
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
@@ -98,6 +99,11 @@
         <!-- RIGHT SIDEBAR -->
         <div class="sidebar">
             <h3>Sidebar</h3>
+            <!--test upload-->
+            <form action="/upload.php" method="post" enctype="multipart/form-data">
+                <input type="file" name="file-upload">
+                <input type="submit" name="submit">
+            </form>
             <ul>
                 <li><a href="#" style="color:white;">Link 1</a></li>
                 <li><a href="#" style="color:white;">Link 2</a></li>
