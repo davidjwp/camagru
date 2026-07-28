@@ -1,8 +1,7 @@
 <?php
-	session_start();
 	require_once 'functs.php';
+	session_start();
 
-	/*check session*/
 	if (!isset($_SESSION['user']) || check_session($_SESSION['user'])) {
 		header('location: /index.php');
 		exit;

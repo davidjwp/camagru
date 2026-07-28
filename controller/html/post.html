@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <link rel="stylesheet" href="/style.css">
-    </head>
-<body>
-
-    <!-- HEADER -->
-    <div class="header">
+	<head>
+		    <link rel="stylesheet" href="/style.css">
+	</head>
+	<body>
+		    <div class="header">
         <h1>My Website</h1>
         <p>This is the header</p>
 		<button id="profile_button" onclick="window.location.href='profile.php'">profile</button>
@@ -17,9 +15,17 @@
 
     <!-- MAIN CONTENT -->
     <div class="main-content">
+        <div id="post"></div>
         <!-- BODY (Main content) -->
         <div class="body-content">
             <div id="posts"></div>
+            <div id="comments">
+                <form action="post.php?id=<?= $_GET['id'] ?>"  method="post">
+                    <input type="hidden" name="id" value="<?php echo $_GET['id'] ?>">
+                    <input class="comment_text" name="comment_text" type="text" placeholder="Write comment here.">
+                    <input type="submit" class="comment_submit" name="submit" value="comment">
+                </form>
+            </div>
         </div>
 
         <!-- RIGHT SIDEBAR -->
@@ -40,6 +46,5 @@
     <div class="footer">
         <p>&copy; 2026 My Website. All rights reserved.</p>
     </div>
-
-</body>
+	</body>
 </html>
