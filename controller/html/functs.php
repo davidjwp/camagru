@@ -7,8 +7,9 @@
 		}
 	}
 
-	function post($doc, $post, $comments, $id) {
-		$target = $doc->getElementById('post') ;
+	function post($doc, $post, $comments, $id, $comment_count) {
+		$post_target = $doc->getElementById('post') ;
+		$com_target = $doc->getElementById('comments');
 
 		$image = $doc->createElement('img') ;
 		$image->setAttribute('class', 'post_image');
@@ -17,6 +18,7 @@
 		$likes = $doc->createElement('div');
 		$likes->setAttribute('class', 'likes');
 		
+		//heart svg
 		$svg = $doc->createElement('svg');
 		$svg->setAttribute('fill', "#000000");
 		$svg->setAttribute('width', "30px");
@@ -30,21 +32,39 @@
 		4.27,0,0,1,6,0,1,1,0,0,0,1.42,0,4.27,4.27,0,0,1,6,0A4.29,4.29,0,0,1,18.75,12.43Z");
 		$svg->appendChild($path);
 		$likes->nodeValue = strval($post[0]["like_count"]) ." likes";
+		$likes->appendChild($svg);
 		
+		//creating comments
 		$com_div = $doc->createElement('div');
 		$com_div->setAttribute('class', 'comments');
-		// foreach ($comment as $c) {
-		// 	$com = $doc->createElement('div');
-		// 	$com->setAttribute('class', 'comment');
-		// 	$com->nodeValue = $c['content'];
-		// 	$com_div->appendChild($com);
-		// }
-		// $comments->
+		if ($comment_count) {
+			foreach ($comments as $c) {
+				$com = $doc->createElement('div');
+				$com->setAttribute('class', 'comment');
+
+				$com_info = $doc->createElement('div');
+				$com_info->setAttribute('class', 'com_info');
+
+				$com_time = $doc->createElement('div');
+				$com_time->setAttribute('class', 'com_time');
+				$com_time->nodeValue = $c['created_at'];
+				
+				$com_user = $doc->createElement('div');
+
+				$com_user->setAttribute('class', 'com_user');
+				$com_user->nodeValue = $c['username'];
+
+				$com_info->appendChild($com_user);
+				$com_info->appendChild($com_time);
+				$com->nodeValue = $c['content'];
+				$com->appendChild($com_info);
+				$com_div->appendChild($com);
+			}
+		}
 		
-		$target->appendChild($image);
-		$target->appendChild($svg);
-		$target->appendChild($likes);
-		$target->appendChild($com_div);
+		$post_target->appendChild($image);
+		$post_target->appendChild($likes);
+		$com_target->appendChild($com_div);
 	}
 
 	function DOMerror($msg, $doc) {
@@ -110,11 +130,12 @@
 		$target->appendChild($form);
 	}
 
-	function sendMail($token, $type, $to) {
+	function sendMail($data, $type, $to) {
 
 		$l = $type == "verification" ? "verify_email.php" : "password_reset.php";
 
-		$LINK = "http://$_SERVER[HTTP_HOST]/$l?token=" . bin2hex($token);
+		if ($data['type'] === 'token')
+			$LINK = "http://$_SERVER[HTTP_HOST]/$l?token=" . bin2hex($data['value']);
 		
 		switch ($type) {
 			case "verification":
@@ -125,6 +146,10 @@
 				$subject = "Camagru password reset";
 				$message = "confirm password reset with this link\n\n\t$LINK";
 				break;
+			case "new_comment":
+				$subject = "new comment";
+				$message = "you've received a new comment from ". 
+				$data['value']['username']."\n\n".$data['value']['comment_text'];
 		}
 
 		$result = mail($to, $subject, $message);

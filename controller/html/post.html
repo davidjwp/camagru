@@ -11,20 +11,19 @@
         <form action="" method="post">
 			<button name="disconnect" value="disconnect">disconnect</button>
 		</form>
+        <button id="home_button" onclick="window.location.href='home.php'">home</button>
     </div>
 
     <!-- MAIN CONTENT -->
-    <div class="main-content">
-        <div id="post"></div>
+    <div class="post_content">
         <!-- BODY (Main content) -->
+        <div id="post"></div>
         <div class="body-content">
-            <div id="posts"></div>
+            <form action="/post.php"  method="post">
+                <input class="comment_text" name="comment_text" type="text" placeholder="Write comment here.">
+                <input type="submit" class="comment_submit" name="submit" value="comment">
+            </form>
             <div id="comments">
-                <form action="post.php?id=<?= $_GET['id'] ?>"  method="post">
-                    <input type="hidden" name="id" value="<?php echo $_GET['id'] ?>">
-                    <input class="comment_text" name="comment_text" type="text" placeholder="Write comment here.">
-                    <input type="submit" class="comment_submit" name="submit" value="comment">
-                </form>
             </div>
         </div>
 

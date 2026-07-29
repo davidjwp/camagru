@@ -102,6 +102,10 @@ body {
     }
 }
 
+.post_content {
+    display: flexbox;
+}
+
 .post_image {
     max-width: 200px;
 }
@@ -124,4 +128,8 @@ body {
 
 .comment_submit {
 
+}
+
+.com_info {
+    display: block;
 }
