@@ -68,8 +68,18 @@
 			]);
 	}
 	
-	
+	if (isset($_POST['notification'])) {
+		$val = $_POST['notification'];
+		$stmt = $pdo->prepare("UPDATE users SET notification = :notification WHERE id = :id");
+		$stmt->execute([":notification"=>$_POST['notification']]);
+	}
+
 	// var_dump($_SESSION);
+// <input type="checkbox" id="checkbox"> 
+	
+	$target = $doc->getElementById('checkbox');
+	$checkbox = $doc->createElement('input');
+	$checkbox->setAttribute('');
 	$doc->getElementById('welcome_header')->nodeValue = "Welcome ". $_SESSION['user']['username'];
 	$doc->getElementById('email_info')->nodeValue = $_SESSION['user']['email'];
 	echo $doc->saveHTML();

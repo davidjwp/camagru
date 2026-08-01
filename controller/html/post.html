@@ -1,8 +1,29 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		    <link rel="stylesheet" href="/style.css">
-	</head>
+		<link rel="stylesheet" href="/style.css">
+        <script>
+            function toggleLike(postId, postLiked, like_count) {
+                fetch('/like.php', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({id: postId, liked: postLiked})
+                })
+                .then(res => res.json())
+                .then(data => {
+                    const heart = document.getElementById('heart' + postId);
+                    const counter = document.getElementById('likes_counter');
+                    
+                    heart.classList.toggle('liked');
+                    heart.classList.add('animate');
+                
+                    if (!data.like_count) counter.textContent = 0 + ' likes'
+                    else counter.textContent = data.like_count + ' likes';
+                    setTimeout(() => heart.classList.remove('animate'), 300);
+                })
+            }
+        </script>
+    </head>
 	<body>
 		    <div class="header">
         <h1>My Website</h1>

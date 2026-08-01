@@ -7,7 +7,7 @@
 		}
 	}
 
-	function post($doc, $post, $comments, $id, $comment_count) {
+	function post($doc, $post, $comments, $comment_count, $liked) {
 		$post_target = $doc->getElementById('post') ;
 		$com_target = $doc->getElementById('comments');
 
@@ -16,30 +16,38 @@
 		$image->setAttribute('src', '/uploads/'.$post[0]['image_path']);
 
 		$likes = $doc->createElement('div');
-		$likes->setAttribute('class', 'likes');
+		$likes_counter = $doc->createElement('span');
+		$likes_counter->nodeValue = strval($post[0]["like_count"]) ." likes";
+		$likes->setAttribute('class', 'like');
+		$likes_counter->setAttribute('id', 'likes_counter');
 		
 		//heart svg
 		$svg = $doc->createElement('svg');
-		$svg->setAttribute('fill', "#000000");
+		$liked ? $svg->setAttribute('fill', "#ff0000"): $svg->setAttribute('fill', "#000000");;
 		$svg->setAttribute('width', "30px");
 		$svg->setAttribute('height', "30px");
 		$svg->setAttribute('viewbox', "0 0 24 24");
 		$svg->setAttribute('xmlns', "http://www.w3.org/2000/svg");
-
-		$path = $doc->createElement('path');
-		$path->setAttribute('d', "M20.16,5A6.29,6.29,0,0,0,12,4.36a6.27,6.27,0,0,0-8.16,9.48l6.21,6.22a2.78,2.78,0,0,0,3.9,
-		0l6.21-6.22A6.27,6.27,0,0,0,20.16,5Zm-1.41,7.46-6.21,6.21a.76.76,0,0,1-1.08,0L5.25,12.43a4.29,4.29,0,0,1,0-6,4.27,
-		4.27,0,0,1,6,0,1,1,0,0,0,1.42,0,4.27,4.27,0,0,1,6,0A4.29,4.29,0,0,1,18.75,12.43Z");
-		$svg->appendChild($path);
-		$likes->nodeValue = strval($post[0]["like_count"]) ." likes";
-		$likes->appendChild($svg);
+		$svg->setAttribute('onclick', "toggleLike(".$post[0]['id'].",".$liked.",".$post[0]["like_count"].")");
+		$svg->setAttribute('class', "heart");
+		$svg->setAttribute('id', "heart".$post[0]['id']);
 		
+		$path = $doc->createElement('path');
+		$path->setAttribute('d', "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 
+		3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z");
+		$svg->appendChild($path);
+		
+		$likes->appendChild($likes_counter);
+		$likes->appendChild($svg);
+
 		//creating comments
 		$com_div = $doc->createElement('div');
 		$com_div->setAttribute('class', 'comments');
 		if ($comment_count) {
 			foreach ($comments as $c) {
 				$com = $doc->createElement('div');
+				$com_cont = $doc->createElement('div');
+				$com_cont->nodeValue = $c['content'];
 				$com->setAttribute('class', 'comment');
 
 				$com_info = $doc->createElement('div');
@@ -56,8 +64,8 @@
 
 				$com_info->appendChild($com_user);
 				$com_info->appendChild($com_time);
-				$com->nodeValue = $c['content'];
 				$com->appendChild($com_info);
+				$com->appendChild($com_cont);
 				$com_div->appendChild($com);
 			}
 		}

@@ -33,7 +33,7 @@
 	);
 	
 
-	$post_query = "SELECT posts.*, users.username, users.email, COUNT(DISTINCT likes.user_id) as like_count FROM posts 
+	$post_query = "SELECT posts.*, users.username, users.email , COUNT(DISTINCT likes.user_id) as like_count FROM posts 
 	LEFT JOIN users ON posts.user_id = users.id LEFT JOIN likes ON posts.id = likes.post_id
 	WHERE posts.id = :id
 	GROUP BY posts.id ORDER BY posts.created_at DESC";
@@ -42,6 +42,8 @@
 	LEFT JOIN users ON comments.user_id = users.id
 	WHERE comments.post_id = :post_id
 	ORDER BY comments.created_at ASC";
+
+	$like_query = "SELECT * FROM likes WHERE :post_id = post_id AND :user_id = user_id";
 
 	$stmt = $pdo->prepare($post_query);
 	$stmt->execute([':id'=>$post_id]);
@@ -76,6 +78,10 @@
 	$stmt->execute([':post_id'=>$post_id]);
 	$comments = $stmt->fetchall();
 	$comment_count = count($comments);
+	
+	$stmt = $pdo->prepare($like_query);
+	$stmt->execute([':post_id'=>$post_id, ':user_id'=>$_SESSION['user']['id']]);
+	$liked = $stmt->fetch() ? 1: 0;
 
-	post($doc, $post, $comments, $post_id, $comment_count);
+	post($doc, $post, $comments, $comment_count, $liked);
 	echo $doc->saveHTML();

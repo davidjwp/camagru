@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<link rel="stylesheet" href="/style.css">
 		<style>
 			.cui {
 				font-family: Arial, Helvetica, sans-serif;
@@ -23,6 +24,23 @@
 		<form action="" method="post">
 			<button name="disconnect" value="disconnect">disconnect</button>
 		</form>
+		<br>
+		<div id="checkbox">
+		<span> disable email notification</span>
+		<form action="/profile.php" method="post">
+		</form>
+		<script>
+			const checkbox = document.getElementById('checkbox');
+
+			checkbox.addEventListener('click', (e)=>{
+				fetch('/profile.php', {
+					method: 'POST',
+					headers: {'Content-Type': 'application/json'},
+					body: JSON.stringify({notification: e.target.checked})
+				}
+				)
+			});
+		</script>
 		<br>
 		<div class="cui">change user info</div>
 		<form action="/profile.php" method="post">

@@ -103,11 +103,11 @@ body {
 }
 
 .post_content {
-    display: flexbox;
+    /* display: flex; */
 }
 
 .post_image {
-    max-width: 200px;
+    max-width: 500px;
 }
 
 .comments {
@@ -130,6 +130,48 @@ body {
 
 }
 
-.com_info {
-    display: block;
+.com_info { 
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8em;
+    color: #888;
+    margin-bottom: 4px;
+
 }
+
+.heart {
+    cursor: pointer;
+    transition: transform 0.1s ease;
+}
+
+.heart:hover {
+    transform: scale(1.1);
+}
+
+.heart.liked {
+    fill: red;
+}
+
+.heart.animate {
+    animation: heartbeat 0.3s ease;
+}
+
+@keyframes heartbeat {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.4); }
+    100% { transform: scale(1); }
+}
+
+/* .checkbox {
+    font-family: Arial, Helvetica, sans-serif;
+} */
+/* .like {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+#likes_conter {
+    display: flex;
+    justify-content: center;
+} */
