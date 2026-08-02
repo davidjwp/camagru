@@ -68,20 +68,27 @@
 			]);
 	}
 	
-	if (isset($_POST['notification'])) {
-		$val = $_POST['notification'];
-		$stmt = $pdo->prepare("UPDATE users SET notification = :notification WHERE id = :id");
-		$stmt->execute([":notification"=>$_POST['notification']]);
-	}
+	$stmt = $pdo->prepare("SELECT notification FROM users WHERE id = :id");
+	$stmt->execute([":id"=>$_SESSION['user']['id']]);
+	$notification = $stmt->fetch()['notification'] ? 1: 0;
 
-	// var_dump($_SESSION);
-// <input type="checkbox" id="checkbox"> 
-	
 	$target = $doc->getElementById('checkbox');
 	$checkbox = $doc->createElement('input');
-	$checkbox->setAttribute('');
-	$doc->getElementById('welcome_header')->nodeValue = "Welcome ". $_SESSION['user']['username'];
-	$doc->getElementById('email_info')->nodeValue = $_SESSION['user']['email'];
+	$checkbox->setAttribute('type', 'checkbox');
+	if ($notification) $checkbox->removeAttribute('checked'); 
+	else $checkbox->setAttribute('checked', 'checked');
+
+	$target->appendChild($checkbox);
+	$data = json_decode(file_get_contents('php://input'), true);
+
+	$doc->getElementById('welcome_header')->nodeValue = "Welcome ". $user['username'];
+	$doc->getElementById('email_info')->nodeValue = $user['email'];
 	echo $doc->saveHTML();
-	// header('location: index.php');
+	if (isset($data['checked'])) {
+		$notification = $data['notification'] ? 0 : 1;
+		error_log("NOTIFICATION PRESENT ". $notification . " ". $user['id']);
+		$stmt = $pdo->prepare("UPDATE users SET notification = :notification WHERE id = :id");
+		$stmt->execute([":notification"=>$notification, ":id"=>$user['id']]);
+	}
+
 	exit;

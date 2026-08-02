@@ -31,9 +31,8 @@
 		"camagru_admin",
 		"camagru_admin_pass"
 	);
-	
 
-	$post_query = "SELECT posts.*, users.username, users.email , COUNT(DISTINCT likes.user_id) as like_count FROM posts 
+	$post_query = "SELECT posts.*, users.username, users.email, COUNT(DISTINCT likes.user_id) as like_count FROM posts 
 	LEFT JOIN users ON posts.user_id = users.id LEFT JOIN likes ON posts.id = likes.post_id
 	WHERE posts.id = :id
 	GROUP BY posts.id ORDER BY posts.created_at DESC";
@@ -54,6 +53,11 @@
 		exit; 
 	}
 
+	$stmt = $pdo->prepare($comments_query);
+	$stmt->execute([':post_id'=>$post_id]);
+	$comments = $stmt->fetchall();
+	$comment_count = count($comments);
+
 	if (isset($_POST['comment_text']) && !empty($_POST['comment_text'])) {
 		$stmt = $pdo->prepare(
 			"INSERT INTO comments (post_id, user_id, content) 
@@ -63,22 +67,21 @@
 			":post_id"=>$post_id, 
 			":user_id"=>$_SESSION['user']['id'], 
 			":content"=>$_POST['comment_text']
-		]);
-		
-		sendMail(["type"=>'','value'=>[
-			'comment_text'=>$_POST['comment_text'],
-			'username'=>$_SESSION['user']['username']
-			]], "new_comment", $post[0]['email']);
-
+			]);
+			
+		$stmt = $pdo->prepare("SELECT notification FROM users WHERE id = :id");
+		$stmt->execute([":id"=>$_SESSION['user']['id']]);
+		$notification = $stmt->fetch();
+		if ($notification[0]) {
+			sendMail(["type"=>'','value'=>[
+				'comment_text'=>$_POST['comment_text'],
+				'username'=>$_SESSION['user']['username']
+				]], "new_comment", $post[0]['email']);
+		}
 		header('location: /post.php?id='.$post_id);
 		exit;
 	}
 
-	$stmt = $pdo->prepare($comments_query);
-	$stmt->execute([':post_id'=>$post_id]);
-	$comments = $stmt->fetchall();
-	$comment_count = count($comments);
-	
 	$stmt = $pdo->prepare($like_query);
 	$stmt->execute([':post_id'=>$post_id, ':user_id'=>$_SESSION['user']['id']]);
 	$liked = $stmt->fetch() ? 1: 0;
