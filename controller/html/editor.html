@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="/style.css">
+    </head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <h1>My Website</h1>
+        <p>This is the header</p>
+		<button id="profile_button" onclick="window.location.href='profile.php'">profile</button>
+        <form action="" method="post">
+			<button name="disconnect" value="disconnect">disconnect</button>
+		</form>
+		 <button id="home_button" onclick="window.location.href='home.php'">home</button>
+    </div>
+
+    <!-- Main body -->    
+    <div class="main-content">
+        <div class="body-content">
+
+            <div class="editor-main">
+                <div id="webcam-container">
+                    <video id="webcam" autoplay playsinline></video>
+                    <canvas id="preview"></canvas>
+                    <input type="file" id="image-upload" accept="image/*">
+                </div>
+                <div id="stickers">
+            
+                </div>
+            
+                <button id="capture-btn" disabled onclick="capture()">Capture</button>
+
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="editor-sidebar">
+                <div id="user-posts"></div>
+                <div id="tmp-thumbnails"></div>
+            </div>
+
+            <script>
+                const video = document.getElementById('webcam');
+                const canvas = document.getElementById('preview');
+                const captureBtn = document.getElementById('capture-btn');
+                let selectedSticker = null;
+
+                // start webcam
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(stream => {
+                        video.srcObject = stream;
+                    })
+                    .catch(err => {
+                        document.getElementById('webcam').style.display = 'none';
+                        document.getElementById('image-upload').style.display = 'block';
+                        console.log('No webcam:', err);
+                    });
+
+                    function selectSticker(el, path) {
+                        // deselect previous
+                        document.querySelectorAll('.sticker').forEach(s => s.classList.remove('selected'));
+                        el.classList.add('selected');
+                        selectedSticker = path;
+                        captureBtn.disabled = false;
+                    }
+
+                    function capture() {
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+
+                    // draw webcam frame
+                    ctx.drawImage(video, 0, 0);
+
+                    // draw sticker on top
+                    const stickerImg = new Image();
+                    stickerImg.src = selectedSticker;
+                    stickerImg.onload = () => {
+                        ctx.drawImage(stickerImg, 0, 0, canvas.width, canvas.height);
+
+                        // send to PHP
+                        const data = canvas.toDataURL('image/jpeg');
+                        fetch('/capture.php', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({ image: data, sticker: selectedSticker })
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) addThumbnail(data.filename);
+                        });
+                    };
+
+                    function addThumbnail(filename) {
+                    const sidebar = document.getElementById('tmp-thumbnails');
+                    const img = document.createElement('img');
+                    img.src = '/tmp/' + filename;
+                    img.className = 'thumbnail';
+                    sidebar.prepend(img);
+                }
+
+                document.getElementById('capture-btn').addEventListener('click', capture);
+                }
+
+            </script>
+            <form action="/upload.php" method="post" enctype="multipart/form-data">
+                <input type="file" name="file-upload" accept=".jpeg,.jpg,.png">
+                <div id="upload"></div>
+                <input type="submit" name="submit">
+            </form>
+            <ul>
+            </ul>
+        </div>
+    </div>
+
+    <div class="sticker-footer" id="sticker-footer">
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>&copy; 2026 My Website. All rights reserved.</p>
+    </div>
+
+</body>
+</html>

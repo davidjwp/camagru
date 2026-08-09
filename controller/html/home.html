@@ -20,17 +20,22 @@
         <!-- BODY (Main content) -->
         <div class="body-content">
             <div id="posts"></div>
+            <div id="pagination"></div>
         </div>
 
         <!-- RIGHT SIDEBAR -->
         <div class="sidebar">
             <h3>Sidebar</h3>
+            <button class="Edit_button" onclick="window.location.href='editor.php';">EDIT</button>
+            <!-- <form action="/editor.php" method="post">
+                <input type="submit" name="editor">
+            </form> -->
             <!--test upload-->
-            <form action="/upload.php" method="post" enctype="multipart/form-data">
+            <!-- <form action="/upload.php" method="post" enctype="multipart/form-data">
                 <input type="file" name="file-upload">
                 <div id="upload"></div>
                 <input type="submit" name="submit">
-            </form>
+            </form> -->
             <ul>
             </ul>
         </div>
