@@ -182,3 +182,7 @@ html, body {
     justify-content: center;
 }
 
+.selected {
+    background-color: #c5d2de;
+    border-radius: 20px;
+}

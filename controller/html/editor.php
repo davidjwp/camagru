@@ -10,7 +10,7 @@
 	
 	$filename = "/tmp";
 	$_SESSION['tmp_images'][] = $filename;
-		
+
 	if (isset($_POST["disconnect"])) {
 		session_destroy();
 		header("location: /index.php");

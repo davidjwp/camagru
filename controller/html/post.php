@@ -13,7 +13,7 @@
 		exit;
 	}
 
-	//set $GET['id'] to session to keep data across POST's 
+	//to keep data across POST's using session
 	isset($_GET['id']) ? $_SESSION['post_id'] = $_GET['id']: null;
 
 	isset($_SESSION['post_id']) ?  $post_id = $_SESSION['post_id']: $post_id = null;
@@ -25,7 +25,7 @@
 
 	$doc = new DOMDocument;
 	$doc->loadHTMLFile('post.html');
-	
+
 	$pdo = new PDO(
 		"mysql:host=model;dbname=camagru;charset=utf8",
 		"camagru_admin",
