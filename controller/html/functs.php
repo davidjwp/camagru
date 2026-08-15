@@ -1,6 +1,6 @@
 <?php
 	
-	function post($doc, $post, $comments, $comment_count, $liked) {
+	function post($doc, $post, $comments, $comment_count, $liked, $is_user) {
 		$post_target = $doc->getElementById('post') ;
 		$com_target = $doc->getElementById('comments');
 
@@ -24,14 +24,22 @@
 		$svg->setAttribute('onclick', "toggleLike(".$post[0]['id'].",".$liked.",".$post[0]["like_count"].")");
 		$svg->setAttribute('class', "heart");
 		$svg->setAttribute('id', "heart".$post[0]['id']);
-		
+
 		$path = $doc->createElement('path');
 		$path->setAttribute('d', "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 
 		3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z");
 		$svg->appendChild($path);
 		
+		
 		$likes->appendChild($likes_counter);
 		$likes->appendChild($svg);
+		if ($is_user) {
+			$del = $doc->createElement('button');
+			$del->nodeValue = 'delete post';
+			$del->setAttribute('class', 'delete_button');
+			$del->setAttribute('onClick', "del()");
+			$likes->appendChild($del);
+		}
 
 		//creating comments
 		$com_div = $doc->createElement('div');

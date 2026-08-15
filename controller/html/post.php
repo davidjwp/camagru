@@ -32,6 +32,22 @@
 		"camagru_admin_pass"
 	);
 
+	$data = json_decode(file_get_contents('php://input'), true);
+
+	if (isset($data['delete'])) {
+		$stmt = $pdo->prepare("SELECT image_path FROM posts WHERE id = :post_id");
+		$stmt->execute([':post_id'=>$post_id]);
+		$img_path = "/var/www/html/uploads/" . $stmt->fetchColumn();
+		if ($img_path)
+			unlink($img_path);
+
+		$stmt = $pdo->prepare("DELETE FROM posts WHERE id = :post_id");
+		$stmt->execute([':post_id'=>$post_id]);
+
+		echo json_encode(['success'=>true]);
+		exit ;
+	}
+
 	$post_query = "SELECT posts.*, users.username, users.email, COUNT(DISTINCT likes.user_id) as like_count FROM posts 
 	LEFT JOIN users ON posts.user_id = users.id LEFT JOIN likes ON posts.id = likes.post_id
 	WHERE posts.id = :id
@@ -48,8 +64,7 @@
 	$stmt->execute([':id'=>$post_id]);
 	$post = $stmt->fetchAll();
 	if (!$post) {
-		DOMerror("Error pulling post", $doc);
-		echo $doc->saveHTML();
+		header('location: /home.php');
 		exit; 
 	}
 
@@ -86,5 +101,9 @@
 	$stmt->execute([':post_id'=>$post_id, ':user_id'=>$_SESSION['user']['id']]);
 	$liked = $stmt->fetch() ? 1: 0;
 
-	post($doc, $post, $comments, $comment_count, $liked);
+	$stmt = $pdo->prepare("SELECT * FROM posts WHERE id = :post_id AND user_id = :user_id");
+	$stmt->execute([':post_id'=>$post_id, ':user_id'=>$_SESSION['user']['id']]);
+	$is_user = $stmt->fetch() ? 1: 0;
+
+	post($doc, $post, $comments, $comment_count, $liked, $is_user);
 	echo $doc->saveHTML();
