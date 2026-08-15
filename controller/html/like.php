@@ -3,7 +3,7 @@
 	session_start();
 	require_once 'functs.php';
 	
-	if (!isset($_SESSION['user']) || check_session($_SESSION['user'])) {
+	if (!isset($_SESSION['user'])) {
 		header('location: /index.php');
 		exit;
 	}

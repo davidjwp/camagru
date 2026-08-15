@@ -3,7 +3,7 @@
 	session_start();
 	
 	
-	if (!isset($_SESSION['user']) || check_session($_SESSION['user'])) {
+	if (!isset($_SESSION['user'])) {
 		header('location: /index.php');
 		exit;
 	}
@@ -32,17 +32,7 @@
 	// $stickers = "/Stickers";
 	$stickers = glob('/var/www/html/Stickers/*.png');
 	$target = $doc->getElementById("sticker-footer");
-
-	foreach ($stickers as $sticker) {
-		$filename = basename($sticker);
-		$img = $doc->createElement('img');
-		$img->setAttribute('src', '/Stickers/' . $filename);
-		$img->setAttribute('class', 'sticker');
-		$img->setAttribute('onclick', "selectSticker(this, '/Stickers/$filename')");
-
-		$target->appendChild($img);
-		
-	}
+	addStickers($stickers, $target, $doc);
 	// $stmt = $pdo->prepare("SELECT image_path FROM posts WHERE user_id = :user_id ORDER BY created_at DESC");
 	// $stmt->execute([":user_id"=>$_SESSION['user']['id']]);
 	// $

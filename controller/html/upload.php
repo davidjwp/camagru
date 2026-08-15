@@ -2,38 +2,39 @@
 	session_start();
 	require_once 'functs.php';
 	
+	//get doc and put down errors due to DOMDoc php ver
 	$doc = new DOMDocument();
-	$doc->loadHTMLFile('home.html');
-	
-	if (!isset($_SESSION['user']) || check_session($_SESSION['user'])) {
+	libxml_use_internal_errors(true);
+	$doc->loadHTMLFile("editor.html");
+	libxml_clear_errors();
+
+	$stickers = glob('/var/www/html/Stickers/*.png');
+	$target = $doc->getElementById("sticker-footer");
+
+	if (!isset($_SESSION['user'])) {
 		header('location: /index.php');
 		exit;
 	}
-	
+
 	$pdo = new PDO(
 		"mysql:host=model;dbname=camagru;charset=utf8",
 		"camagru_admin",
 		"camagru_admin_pass"
 	);
 
-	if (empty($_FILES)) {
-		DOMerror('image size limit 10M', $doc);
-		echo $doc->saveHTML();
-		exit;
-	}
-
-
-	if (isset($_FILES['file-upload'])) {
-		$path = pathinfo($_FILES['file-upload']["full_path"]);
+	if (isset($_POST['selected_thumbnail'])) {
+		$path = pathinfo($_POST['selected_thumbnail']);
 		$extensions = ['jpeg', 'jpg', 'png'];
 
 		if (in_array($path['extension'], $extensions)) {
 			$filename = bin2hex(random_bytes(16)).'.'.$path['extension'];
 			$dest = '/var/www/html/uploads/' . $filename;
-			$tmp_fil = $_FILES['file-upload']['tmp_name'];
+			$tmp_fil = "/var/www/html/". $_POST['selected_thumbnail'];
 
-			if (!move_uploaded_file($tmp_fil, $dest)) {
+			if (!copy($tmp_fil, $dest)) {
+				error_log("move_uploaded_file ". print_r($tmp_fil));
 				DOMerror('upload failed', $doc);
+				addStickers($stickers, $target, $doc);
 				echo $doc->saveHTML();
 				exit ;
 			}
@@ -46,10 +47,16 @@
 		}
 		else {
 			DOMerror("only jpeg, jpg and png's are supported", $doc); 
+			addStickers($stickers, $target, $doc);
 			echo $doc->saveHTML();
 			exit ;
 		}
-		header('location: /home.php');
-		exit ;
 	}
+	else {
+		DOMError('no thumbnail selected', $doc);
+		addStickers($stickers, $target, $doc);
+		echo $doc->saveHTML();
+		exit;
+	}
+	addStickers($stickers, $target, $doc);
 	echo $doc->saveHTML();

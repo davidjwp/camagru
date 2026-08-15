@@ -1,12 +1,5 @@
 <?php
 	
-	function check_session($user) {
-		if (!$user) {
-			header('location: /index.php');
-			exit;
-		}
-	}
-
 	function post($doc, $post, $comments, $comment_count, $liked) {
 		$post_target = $doc->getElementById('post') ;
 		$com_target = $doc->getElementById('comments');
@@ -75,13 +68,25 @@
 		$com_target->appendChild($com_div);
 	}
 
+	function addStickers($stickers, $target, $doc) {
+		foreach ($stickers as $sticker) {
+			$filename = basename($sticker);
+			$img = $doc->createElement('img');
+			$img->setAttribute('src', '/Stickers/' . $filename);
+			$img->setAttribute('class', 'sticker');
+			$img->setAttribute('onclick', "selectSticker(this, '/Stickers/$filename')");
+
+			$target->appendChild($img);
+			
+		}
+	}
+
 	function DOMerror($msg, $doc) {
 		$target = $doc->getElementById('upload') ;
 
-		$err = $doc->createElement('p') ;
+		$err = $doc->createElement('div') ;
 		$err->setAttribute('class', 'error');
 		$err->nodeValue = $msg;
-
 		$target->appendChild($err);
 	}
 

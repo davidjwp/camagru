@@ -24,30 +24,33 @@
                 <div id="webcam-container">
                     <video id="webcam" autoplay playsinline></video>
                     <canvas id="preview"></canvas>
-                    <input type="file" id="image-upload" accept="image/*">
+                    <input type="file" id="image-upload" accept=".jpeg,.jpg,.png">
                 </div>
                 <div id="stickers">
             
                 </div>
             
-                <button id="capture-btn" disabled onclick="capture()">Capture</button>
+                <button id="capture-btn" disabled>Capture</button>
 
             </div>
         </div>
         
         <!-- Sidebar -->
         <div class="sidebar">
-            hey
             <div class="editor-sidebar">
                 <div id="user-posts"></div>
-                <div id="tmp-thumbnails"></div>
+                <form id="upload" action="/upload.php" method="post" enctype="multipart/form-data">
+                    <input type="file" name="file-upload" hidden>
+                    <div id="tmp-thumbnails"></div>
+                    <input type="submit" name="submit">
+                </form>
             </div>
 
-            <form action="/upload.php" method="post" enctype="multipart/form-data">
+            <!-- <form action="/upload.php" method="post" enctype="multipart/form-data">
                 <input type="file" name="file-upload" accept=".jpeg,.jpg,.png">
                 <div id="upload"></div>
                 <input type="submit" name="submit">
-            </form>
+            </form> -->
             <ul>
             </ul>
             <script>
@@ -68,11 +71,28 @@
                 });
 
                 function selectSticker(el, path) {
-                    // deselect previous
+                    // deselect all previous
                     document.querySelectorAll('.sticker').forEach(s => s.classList.remove('selected'));
                     el.classList.add('selected');
                     selectedSticker = path;
                     captureBtn.disabled = false;
+                }
+
+                function selectThumbnail() {
+                    document.querySelectorAll('.thumbnail').forEach(thmb => thmb.classList.remove('selected'));
+                    this.classList.add('selected');
+                    const selectedThumbnail= '/tmp/' + this.src.split('/').pop();
+
+                    const form = document.getElementById('upload');
+                    const formData = new FormData(form);
+                    let hiddenInput = form.querySelector('input[name="selected_thumbnail"]');
+                    if (!hiddenInput) {
+                        hiddenInput = document.createElement('input');
+                        hiddenInput.type = 'hidden';
+                        hiddenInput.name = 'selected_thumbnail';
+                        form.appendChild(hiddenInput);
+                    }
+                    hiddenInput.value = selectedThumbnail;
                 }
 
                 function capture() {
@@ -81,28 +101,68 @@
                     canvas.height = video.videoHeight;
                     ctx.drawImage(video, 0, 0); // webcam only, no sticker
                     const data = canvas.toDataURL('image/jpeg');
-                    fetch('/capture.php', {
+                    fetch('/Edit_handler.php', {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({ image: data, sticker: selectedSticker })
                     })
                     .then(res => res.json())
                     .then(data => {
-                        if (data.success) addThumbnail(data.files);
+                        if (data.success) addThumbnail(data.file);
                     });
                 }
 
-                function addThumbnail(filename) {
-                    console.log('thumbnail', filename);
+                function addThumbnail(file) {
                     const sidebar = document.getElementById('tmp-thumbnails');
                     const img = document.createElement('img');
-                    img.src = '/tmp/' + filename;
+                    img.src = '/tmp/' + file;
                     img.className = 'thumbnail';
+                    img.onclick = selectThumbnail;
+                    img.addEventListener('dblclick', event => {
+                        fetch('/Edit_handler.php', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({delete_thumbnail: true, img_src: img.src})
+                        });
+
+                        img.remove();
+                    });
                     sidebar.prepend(img);
+                }
+                
+                function loadThumbnails(){
+                    fetch('/Edit_handler.php', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({get_thumbs: true})
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (!data.files) return ;
+                        
+                        const sidebar = document.getElementById('tmp-thumbnails');
+                        data.files.forEach(thumb => {
+                            const img = document.createElement('img');
+                            img.src = '/tmp/' + thumb;
+                            img.className = 'thumbnail';
+                            img.onclick = selectThumbnail;
+                            img.addEventListener('dblclick', event => {
+                                fetch('/Edit_handler.php', {
+                                    method: 'POST',
+                                    headers: {'Content-Type': 'application/json'},
+                                    body: JSON.stringify({delete_thumbnail: true, img_src: img.src})
+                                });
+
+                                img.remove();
+                            });
+
+                            sidebar.prepend(img);
+                        })
+                    })
                 }
 
                 document.getElementById('capture-btn').addEventListener('click', capture);
-
+                loadThumbnails();
             </script>
         </div>
     </div>
