@@ -2,29 +2,197 @@
 <html>
 	<head>
 		<style>
-			 body {
-				font-family: Arial, Helvetica, sans-serif;
-				background: #f5f5f5;
-				display: flex;			
-			 }
-			 a { 
-				font-family: Arial, Helvetica, sans-serif;
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				font-family: 'Segoe UI', Arial, sans-serif;
+				background: linear-gradient(135deg, #a4afe1 0%, #a9e4ff 100%);
+				min-height: 100vh;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				margin: 0;
+			}
+
+			.login-container {
+				background: white;
+				padding: 40px 35px;
+				border-radius: 16px;
+				box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+				width: 100%;
+				max-width: 380px;
+				transition: transform 0.2s;
+			}
+
+			.login-container:hover {
+				transform: translateY(-2px);
+			}
+
+			h2 {
+				text-align: center;
+				color: #333;
+				margin-bottom: 25px;
+				font-weight: 600;
+				font-size: 24px;
+			}
+
+			input[type="text"],
+			input[type="password"] {
+				width: 100%;
+				padding: 12px 16px;
+				margin: 8px 0;
+				border: 2px solid #e0e0e0;
+				border-radius: 8px;
+				font-size: 14px;
+				transition: border-color 0.3s, box-shadow 0.3s;
+				background: #fafafa;
+			}
+
+			input[type="text"]:focus,
+			input[type="password"]:focus {
+				outline: none;
+				border-color: #667eea;
+				box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+				background: white;
+			}
+
+			input[type="submit"] {
+				width: 100%;
+				padding: 12px;
+				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+				color: white;
+				border: none;
+				border-radius: 8px;
+				font-size: 16px;
+				font-weight: 600;
+				cursor: pointer;
+				transition: transform 0.2s, box-shadow 0.2s;
+				margin-top: 10px;
+			}
+
+			input[type="submit"]:hover {
+				transform: scale(1.02);
+				box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+			}
+
+			input[type="submit"]:active {
+				transform: scale(0.98);
+			}
+
+			.links {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin: 15px 0 20px;
+			}
+
+			a {
+				color: #667eea;
 				text-decoration: none;
-				font-size: 80%;
-			 }
+				font-size: 13px;
+				transition: color 0.2s;
+			}
+
+			a:hover {
+				color: #764ba2;
+				text-decoration: underline;
+			}
+
+			.signup-btn {
+				width: 100%;
+				padding: 12px;
+				background: transparent;
+				color: #667eea;
+				border: 2px solid #667eea;
+				border-radius: 8px;
+				font-size: 16px;
+				font-weight: 600;
+				cursor: pointer;
+				transition: all 0.3s;
+				margin-top: 8px;
+			}
+
+			.signup-btn:hover {
+				background: #667eea;
+				color: white;
+				box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+			}
+
+			.divider {
+				display: flex;
+				align-items: center;
+				margin: 18px 0;
+			}
+
+			.divider::before,
+			.divider::after {
+				content: '';
+				flex: 1;
+				border-bottom: 1px solid #e0e0e0;
+			}
+
+			.divider span {
+				padding: 0 15px;
+				color: #999;
+				font-size: 13px;
+			}
+
+			.error-msg {
+				color: #e74c3c;
+				font-size: 13px;
+				text-align: center;
+				margin-bottom: 12px;
+				padding: 8px;
+				background: #fde8e8;
+				border-radius: 6px;
+				display: none;
+			}
 		</style>
 	</head>
 	<body>
-		<div>
+		<div class="login-container">
+			<h2>Welcome Back</h2>
+
+			<div class="error-msg" id="errorMsg">Invalid username or password</div>
+
+			<form action="/index.php" method="post">
+				<input type="text" name="username" placeholder="Username or email" required>
+				<input type="password" name="password" placeholder="Password" required>
+
+				<div class="links">
+					<a href="send_password_reset.php">Forgot password?</a>
+				</div>
+
+				<input type="submit" value="Sign In">
+			</form>
+
+			<div class="divider">
+				<span>or</span>
+			</div>
+
+			<button class="signup-btn" onclick="window.location.href='sign_up.php'">
+				Create Account
+			</button>
+		</div>
+
+		<script>
+			// Optional: show error if URL has ?error=1
+			if (window.location.search.includes('error=1')) {
+				document.getElementById('errorMsg').style.display = 'block';
+			}
+		</script>
+		<!-- <div class="login-container">
 			<form action="/index.php" method="post">
 				<input type="text" name="username" placeholder="username"><br>
 				<input type="password" name="password" placeholder="password"><br>
 				<a href="send_password_reset.php">forgot my password</a>
 				<br>
-				<input type="submit" value="login">
-			</form>
 			<button onclick="window.location.href='sign_up.php'">Sign up</button>
-		</div>
+		</div> -->
 
 	</body>
 </html>

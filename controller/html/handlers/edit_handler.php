@@ -1,7 +1,7 @@
 <?php 	
 	ob_start();
     session_start();
-    require_once 'functs.php';
+    require_once '../functs.php';
 
     if (!isset($_SESSION['user'])) {
         echo json_encode(['success' => false]);
@@ -14,7 +14,6 @@
         array_splice($thumbnails, 0, 2);
         $files = ['files'=> $thumbnails];
         if (!count($thumbnails)) $files['files'] = null;
-
         echo json_encode($files);
         exit ;
     }
@@ -73,8 +72,6 @@
     // track in session
     if (!isset($_SESSION['tmp_images'])) $_SESSION['tmp_images'] = [];
         $_SESSION['tmp_images'][] = $filename;
-
-    // $files = scandir('/var/www/html/tmp/', SCANDIR_SORT_ASCENDING);
 
     ob_clean();
     header('Content-Type: application/json');

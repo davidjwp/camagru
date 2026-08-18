@@ -1,28 +1,28 @@
 <?php
 	session_start();
-	require_once 'functs.php';
+	require_once '../functs.php';
 	
 	//get doc and put down errors due to DOMDoc php ver
 	$doc = new DOMDocument();
 	libxml_use_internal_errors(true);
-	$doc->loadHTMLFile("editor.html");
+	$doc->loadHTMLFile("../editor.html");
 	libxml_clear_errors();
-
 	$stickers = glob('/var/www/html/Stickers/*.png');
 	$target = $doc->getElementById("sticker-footer");
-
+	
 	if (!isset($_SESSION['user'])) {
-		header('location: /index.php');
+		header('location: ../index.php');
 		exit;
-	}
-
-	$pdo = new PDO(
-		"mysql:host=model;dbname=camagru;charset=utf8",
-		"camagru_admin",
-		"camagru_admin_pass"
-	);
-
+		}
+		
+		$pdo = new PDO(
+			"mysql:host=model;dbname=camagru;charset=utf8",
+			"camagru_admin",
+			"camagru_admin_pass"
+			);
+			
 	if (isset($_POST['selected_thumbnail'])) {
+		error_log("EHFOISAFHOISDHFOID=======");
 		$path = pathinfo($_POST['selected_thumbnail']);
 		$extensions = ['jpeg', 'jpg', 'png'];
 
