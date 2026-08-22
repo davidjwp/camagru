@@ -155,7 +155,7 @@
 	</head>
 	<body>
 		<div class="login-container">
-			<h2>Welcome Back</h2>
+			<h2>Hello there !</h2>
 
 			<div class="error-msg" id="errorMsg">Invalid username or password</div>
 
@@ -164,7 +164,7 @@
 				<input type="password" name="password" placeholder="Password" required>
 
 				<div class="links">
-					<a href="send_password_reset.php">Forgot password?</a>
+					<a href="handlers/send_password_reset.php">Forgot password?</a>
 				</div>
 
 				<input type="submit" value="Sign In">
@@ -178,21 +178,5 @@
 				Create Account
 			</button>
 		</div>
-
-		<script>
-			// Optional: show error if URL has ?error=1
-			if (window.location.search.includes('error=1')) {
-				document.getElementById('errorMsg').style.display = 'block';
-			}
-		</script>
-		<!-- <div class="login-container">
-			<form action="/index.php" method="post">
-				<input type="text" name="username" placeholder="username"><br>
-				<input type="password" name="password" placeholder="password"><br>
-				<a href="send_password_reset.php">forgot my password</a>
-				<br>
-			<button onclick="window.location.href='sign_up.php'">Sign up</button>
-		</div> -->
-
 	</body>
 </html>

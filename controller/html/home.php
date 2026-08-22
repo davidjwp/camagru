@@ -24,8 +24,8 @@
 	
 	$doc->loadHTMLFile('home.html');
 
-	/*loading pages*/
-	$LIMIT = 5;
+	//load pages
+	$LIMIT = 10;
 
 	$post_count = $pdo->query("SELECT COUNT(DISTINCT posts.id) FROM posts")->fetchColumn();
 	$total_pages = ceil($post_count / $LIMIT);

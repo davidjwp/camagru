@@ -7,24 +7,37 @@
         echo json_encode(['success' => false]);
         exit;
     }
-    $data = json_decode(file_get_contents('php://input'), true);
+    
+    $user_tmp = '/var/www/html/tmp/' . $_SESSION['user']['id'] . '/';
+    if (!is_dir($user_tmp)) {
+        mkdir($user_tmp, 0755, true);
+        $_SESSION['tmp_dir'] = $user_tmp;
+    }
 
+    if (!isset($_SESSION['tmp_dir'])) {$_SESSION['tmp_dir'] = $user_tmp;}
+
+    $data = json_decode(file_get_contents('php://input'), true);
+    
     if (isset($data['get_thumbs'])) {
-        $thumbnails = scandir('/var/www/html/tmp/', SCANDIR_SORT_ASCENDING);
+        $tmp_dir = '/var/www/html/tmp/' . $_SESSION['user']['id'] . '/';
+        $thumbnails = scandir($tmp_dir, SCANDIR_SORT_ASCENDING);
         array_splice($thumbnails, 0, 2);
-        $files = ['files'=> $thumbnails];
-        if (!count($thumbnails)) $files['files'] = null;
-        echo json_encode($files);
+
+        $files = null;
+        if (count($thumbnails)) $files = $thumbnails;
+
+        $json = ['files'=> $files, 'path' => '/tmp/'.$_SESSION['user']['id'].'/'];
+        echo json_encode($json);
         exit ;
     }
 
     if (isset($data['delete_thumbnail'])) { 
-        $thumb = basename($data['img_src']);
-        $thumb = '/var/www/html/tmp/'.$thumb;
+        $thumb = basename($data['img_src']); 
+        $thumb = $_SESSION['tmp_dir'].$thumb;
         unlink($thumb);
         exit ;
     }
-
+    error_log("DEBUG 1");
     // decode webcam image data
     $image_data = $data['image'];
     $image_data = preg_replace('/^data:image\/\w+;base64,/', '', $data['image']);
@@ -36,7 +49,8 @@
     $height = imagesy($webcam);
     imagealphablending($webcam, true);
     imagesavealpha($webcam, true);
-
+    
+    error_log("DEBUG 2");
     // get sticker path
     $sticker_path = basename($data['sticker']);
     $sticker_full = '/var/www/html/Stickers/' . $sticker_path;
@@ -48,32 +62,35 @@
     
     // create sticker then alpha canvas then resize the sticker over that
     $sticker = imagecreatefrompng($sticker_full);
-    $sticker_w = imagesx($sticker);
-    $sticker_h = imagesy($sticker);
-
+    // $sticker_w = imagesx($sticker);
+    // $sticker_h = imagesy($sticker);
+    
     $sticker_resized = imagecreatetruecolor($width, $height);
     imagealphablending($sticker_resized, false);
     imagesavealpha($sticker_resized, true);
     $transparent = imagecolorallocatealpha($sticker_resized, 0, 0, 0, 127);
-    imagefill($sticker_resized, 0, 0, $transparent);
-    imagecopyresampled($sticker_resized, $sticker, 0, 0, 0, 0, $width, $height, $sticker_w, $sticker_h);
-
+    error_log("DEBUG 3");
+    // imagefill($sticker_resized, 0, 0, $transparent);
+    // imagecopyresampled($sticker_resized, $sticker, 0, 0, 0, 0, $width, $height, $sticker_w, $sticker_h);
+    // imagecopyresampled($sticker_resized, $sticker, 0, 0, 0, 0, $width, $height, $sticker_w, $sticker_h);
+    
     //create black canvas then copy webcam on top then copy sticker on top
     $output = imagecreatetruecolor($width, $height);
     imagecopy($output, $webcam, 0,0,0,0, $width, $height);  
     imagealphablending($output, true);
-    imagecopy($output, $sticker_resized, 0,0,0,0, $width, $height);
-
+    error_log("DEBUG 4");
+    // imagecopy($output, $sticker_resized, 0,0,0,0, $width, $height);
+    imagecopy($output, $sticker, 0,0,0,0, $width, $height);
+    error_log("DEBUG 5");
     // save to tmp
+
     $filename = bin2hex(random_bytes(16)) . '.jpg';
-    $dest = '/var/www/html/tmp/' . $filename;
+    $dest = $user_tmp . $filename;
     imagejpeg($output, $dest, 90);
 
-    // track in session
-    if (!isset($_SESSION['tmp_images'])) $_SESSION['tmp_images'] = [];
-        $_SESSION['tmp_images'][] = $filename;
+    $thumbnail = '/tmp/'.$_SESSION['user']['id'].'/'.$filename;
 
     ob_clean();
     header('Content-Type: application/json');
-    echo json_encode(['success' => true, 'file' => $filename]);
+    echo json_encode(['success' => true, 'file' => $thumbnail]);
     exit;

@@ -78,7 +78,7 @@
 	if ($notification) $checkbox->removeAttribute('checked'); 
 	else $checkbox->setAttribute('checked', 'checked');
 
-	$target->appendChild($checkbox);
+	// $target->appendChild($checkbox);
 	$data = json_decode(file_get_contents('php://input'), true);
 
 	$doc->getElementById('welcome_header')->nodeValue = "Welcome ". $user['username'];

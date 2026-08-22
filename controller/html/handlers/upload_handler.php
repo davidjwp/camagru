@@ -22,17 +22,17 @@
 			);
 			
 	if (isset($_POST['selected_thumbnail'])) {
-		error_log("EHFOISAFHOISDHFOID=======");
-		$path = pathinfo($_POST['selected_thumbnail']);
+		$path = pathinfo($_SESSION['tmp_dir'] . '/' . $_POST['selected_thumbnail']);
 		$extensions = ['jpeg', 'jpg', 'png'];
 
 		if (in_array($path['extension'], $extensions)) {
 			$filename = bin2hex(random_bytes(16)).'.'.$path['extension'];
 			$dest = '/var/www/html/uploads/' . $filename;
-			$tmp_fil = "/var/www/html/". $_POST['selected_thumbnail'];
+			$tmp_fil = $_SESSION['tmp_dir'] . '/'. $_POST['selected_thumbnail'];
 
 			if (!copy($tmp_fil, $dest)) {
 				error_log("move_uploaded_file ". print_r($tmp_fil));
+				error_log('upload failed');
 				DOMerror('upload failed', $doc);
 				addStickers($stickers, $target, $doc);
 				echo $doc->saveHTML();

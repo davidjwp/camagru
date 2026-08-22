@@ -2,52 +2,171 @@
 <html>
 <head>
 	<style>
-		.form-group {
-			margin-bottom: 15px;
-			position: relative;
-		}
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
 
-		.form-group input {
-			width: 100%;
-			padding: 10px;
-			border: 2px solid #ddd;
-			border-radius: 4px;
-			transition: border-color 0.3s;
-		}
+			body {
+				font-family: 'Segoe UI', Arial, sans-serif;
+				background: linear-gradient(135deg, #a4afe1 0%, #a9e4ff 100%);
+				min-height: 100vh;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				margin: 0;
+			}
 
-		.form-group input.error {
-			border-color: #f44336;
-			background-color: #fff5f5;
-		}
+			.signup-container {
+				background: white;
+				padding: 40px 35px;
+				border-radius: 16px;
+				box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+				width: 100%;
+				max-width: 380px;
+				transition: transform 0.2s;
+			}
 
-		.form-group input.success {
-			border-color: #4CAF50;
-		}
+			.signup-container:hover {
+				transform: translateY(-2px);
+			}
 
-		.error-message {
-			color: #f44336;
-			font-size: 12px;
-			margin-top: 5px;
-			display: none;
-			padding-left: 5px;
-		}
+			h2 {
+				text-align: center;
+				color: #333;
+				margin-bottom: 25px;
+				font-weight: 600;
+				font-size: 24px;
+			}
 
-		.error-message.show {
-			display: block;
-		}
+			input[type="text"],
+			input[type="password"] {
+				width: 100%;
+				padding: 12px 16px;
+				margin: 8px 0;
+				border: 2px solid #e0e0e0;
+				border-radius: 8px;
+				font-size: 14px;
+				transition: border-color 0.3s, box-shadow 0.3s;
+				background: #fafafa;
+			}
 
+			input[type="text"]:focus,
+			input[type="password"]:focus {
+				outline: none;
+				border-color: #667eea;
+				box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+				background: white;
+			}
+
+			input[type="submit"] {
+				width: 100%;
+				padding: 12px;
+				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+				color: white;
+				border: none;
+				border-radius: 8px;
+				font-size: 16px;
+				font-weight: 600;
+				cursor: pointer;
+				transition: transform 0.2s, box-shadow 0.2s;
+				margin-top: 10px;
+			}
+
+			input[type="submit"]:hover {
+				transform: scale(1.02);
+				box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+			}
+
+			input[type="submit"]:active {
+				transform: scale(0.98);
+			}
+
+			.links {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin: 15px 0 20px;
+			}
+
+			a {
+				color: #667eea;
+				text-decoration: none;
+				font-size: 13px;
+				transition: color 0.2s;
+			}
+
+			a:hover {
+				color: #764ba2;
+				text-decoration: underline;
+			}
+
+			.signup-btn {
+				width: 100%;
+				padding: 12px;
+				background: transparent;
+				color: #667eea;
+				border: 2px solid #667eea;
+				border-radius: 8px;
+				font-size: 16px;
+				font-weight: 600;
+				cursor: pointer;
+				transition: all 0.3s;
+				margin-top: 8px;
+			}
+
+			.signup-btn:hover {
+				background: #667eea;
+				color: white;
+				box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+			}
+
+			.divider {
+				display: flex;
+				align-items: center;
+				margin: 18px 0;
+			}
+
+			.divider::before,
+			.divider::after {
+				content: '';
+				flex: 1;
+				border-bottom: 1px solid #e0e0e0;
+			}
+
+			.divider span {
+				padding: 0 15px;
+				color: #999;
+				font-size: 13px;
+			}
+
+			.error-msg {
+				color: #e74c3c;
+				font-size: 13px;
+				text-align: center;
+				margin-bottom: 12px;
+				padding: 8px;
+				background: #fde8e8;
+				border-radius: 6px;
+				display: none;
+			}
 	</style>
 </head>
 	<body>
-		<form action="" method="post">
-			<label>Username</label>
-			<input type="text" name="username"><br>
-			<label>Password</label>
-			<input type="password" name="password"><br>
-			<label>email</label>
-			<input type="text" name="email"><br><br>
-			<input type="submit">
-		</form>
-			<button onclick="window.location.href= 'index.php'">back</button>
+		<div class='signup-container'>
+			<h2>Create an account</h2>
+			<form action="" method="post">
+				<input type="text" name="username" placeholder="Username"><br>
+
+				<input type="password" name="password" placeholder="Password"><br>
+
+				<input type="text" name="email" placeholder="Email"><br><br>
+
+				<input type="submit">
+			</form>
+
+			<a href="../index.php">back</a>
+		</div>
 	</body>
 </html>

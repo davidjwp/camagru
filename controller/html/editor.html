@@ -2,205 +2,589 @@
 <html>
     <head>
         <link rel="stylesheet" href="/style.css">
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            html, body {
+                font-family: 'Segoe UI', Arial, sans-serif;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                background: #f0f2f5;
+            }
+
+            .header {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                padding: 14px 30px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-shrink: 0;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .header-left {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+            }
+
+            .header-left h1 {
+                color: white;
+                font-size: 22px;
+                font-weight: 700;
+                letter-spacing: -0.3px;
+            }
+
+            .header-left .tagline {
+                color: rgba(255,255,255,0.6);
+                font-size: 12px;
+                font-weight: 300;
+            }
+
+            .header-right {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                flex-wrap: wrap;
+            }
+
+            .btn-header {
+                padding: 7px 16px;
+                border: none;
+                border-radius: 6px;
+                font-size: 12px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.25s ease;
+                text-decoration: none;
+            }
+
+            .btn-profile {
+                background: rgba(255,255,255,0.15);
+                color: white;
+                border: 1px solid rgba(255,255,255,0.1);
+            }
+
+            .btn-profile:hover {
+                background: rgba(255,255,255,0.25);
+                transform: translateY(-1px);
+            }
+
+            .btn-home {
+                background: rgba(255,255,255,0.10);
+                color: rgba(255,255,255,0.8);
+                border: 1px solid rgba(255,255,255,0.06);
+            }
+
+            .btn-home:hover {
+                background: rgba(255,255,255,0.20);
+                color: white;
+                transform: translateY(-1px);
+            }
+
+            .btn-disconnect {
+                background: transparent;
+                color: rgba(255,255,255,0.4);
+                font-size: 11px;
+                padding: 5px 12px;
+                border: 1px solid rgba(255,255,255,0.06);
+            }
+
+            .btn-disconnect:hover {
+                color: rgba(255,255,255,0.8);
+                background: rgba(255,255,255,0.06);
+                border-color: rgba(255,255,255,0.12);
+            }
+
+            .main-content {
+                display: flex;
+                flex: 1;
+                padding: 20px 24px;
+                gap: 24px;
+                max-width: 1400px;
+                margin: 0 auto;
+                width: 100%;
+            }
+
+            .body-content {
+                flex: 1;
+                min-width: 0;
+            }
+
+            .editor-main {
+                background: white;
+                border-radius: 12px;
+                padding: 24px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            }
+
+            #webcam-container {
+                position: relative;
+                background: #1a1a2e;
+                border-radius: 8px;
+                /* overflow: hidden; */
+                aspect-ratio: 4/3;
+                max-width: 640px;
+                margin: 0 auto;
+            }
+
+            #webcam-container video,
+            #webcam-container canvas {
+                width: 100%;
+                height: 100%;
+                display: block;
+                object-fit: cover;
+            }
+
+            #webcam-container canvas {
+                display: none;
+            }
+
+            #webcam-container #webcam-btn {
+                position: absolute;
+                bottom: 12px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(0,0,0,0.7);
+                color: white;
+                border: none;
+                padding: 8px 20px;
+                border-radius: 6px;
+                font-size: 13px;
+                cursor: pointer;
+                transition: background 0.2s;
+                display: none;
+                backdrop-filter: blur(4px);
+            }
+
+            #webcam-container #webcam-btn:hover {
+                background: rgba(0,0,0,0.85);
+            }
+
+            #webcam-container #image-upload {
+                /* display: none; */
+                width: 100%;
+                height: 100%;
+                padding: 40px;
+                border: 2px dashed rgba(255,255,255,0.2);
+                border-radius: 8px;
+                background: rgba(255,255,255,0.05);
+                color: rgba(255,255,255,0.6);
+                cursor: pointer;
+                text-align: center;
+            }
+
+            #webcam-container #image-upload::file-selector-button {
+                background: #667eea;
+                color: white;
+                border: none;
+                padding: 10px 24px;
+                border-radius: 6px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: background 0.2s;
+                margin-right: 12px;
+            }
+
+            #webcam-container #image-upload::file-selector-button:hover {
+                background: #764ba2;
+            }
+
+            #stickers {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                padding: 16px 0 12px;
+                justify-content: center;
+            }
+
+            #stickers .sticker {
+                width: 56px;
+                height: 56px;
+                object-fit: contain;
+                cursor: pointer;
+                padding: 4px;
+                border: 2px solid transparent;
+                border-radius: 8px;
+                transition: all 0.2s;
+                background: #f8f9fa;
+            }
+
+            #stickers .sticker:hover {
+                transform: scale(1.08);
+                background: #eef0f5;
+            }
+
+            #stickers .sticker.selected {
+                border-color: #667eea;
+                background: #e8ecfa;
+                box-shadow: 0 0 0 3px rgba(102,126,234,0.2);
+            }
+
+            #capture-btn {
+                display: block;
+                width: 100%;
+                max-width: 300px;
+                margin: 8px auto 0;
+                padding: 12px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border: none;
+                border-radius: 8px;
+                font-size: 16px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.25s;
+            }
+
+            #capture-btn:hover:not(:disabled) {
+                transform: scale(1.02);
+                box-shadow: 0 8px 25px rgba(102,126,234,0.35);
+            }
+
+            #capture-btn:disabled {
+                opacity: 0.4;
+                cursor: not-allowed;
+                transform: none;
+            }
+
+            .sidebar {
+                width: 220px;
+                flex-shrink: 0;
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .editor-sidebar {
+                background: white;
+                border-radius: 12px;
+                padding: 16px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            }
+
+            .editor-sidebar #tmp-thumbnails {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                padding: 4px 0;
+            }
+
+            .editor-sidebar .thumbnail {
+                width: 60px;
+                height: 60px;
+                object-fit: cover;
+                border-radius: 6px;
+                cursor: pointer;
+                border: 2px solid transparent;
+                transition: all 0.2s;
+                background: #f0f2f5;
+            }
+
+            .editor-sidebar .thumbnail:hover {
+                transform: scale(1.05);
+                border-color: #c5cde6;
+            }
+
+            .editor-sidebar .thumbnail.selected {
+                border-color: #667eea;
+                box-shadow: 0 0 0 3px rgba(102,126,234,0.2);
+            }
+
+            .editor-sidebar form {
+                margin-top: 12px;
+                display: flex;
+                gap: 8px;
+                align-items: center;
+            }
+
+            .editor-sidebar form input[type="submit"] {
+                padding: 6px 16px;
+                background: #667eea;
+                color: white;
+                border: none;
+                border-radius: 6px;
+                font-size: 12px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: background 0.2s;
+                flex-shrink: 0;
+            }
+
+            .editor-sidebar form input[type="submit"]:hover {
+                background: #764ba2;
+            }
+
+            .editor-sidebar form input[type="file"] {
+                font-size: 12px;
+                color: #666;
+                flex: 1;
+                min-width: 0;
+            }
+
+            .footer {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                padding: 12px 30px;
+                text-align: center;
+                flex-shrink: 0;
+                margin-top: auto;
+            }
+
+            .footer p {
+                color: rgba(255,255,255,0.4);
+                font-size: 12px;
+                letter-spacing: 0.3px;
+            }
+
+            @media (max-width: 768px) {
+                .main-content {
+                    flex-direction: column;
+                    padding: 12px 14px;
+                }
+                .sidebar {
+                    width: 100%;
+                }
+                .header {
+                    padding: 10px 14px;
+                }
+                .header-left h1 {
+                    font-size: 18px;
+                }
+                .header-left .tagline {
+                    display: none;
+                }
+                .btn-header {
+                    font-size: 11px;
+                    padding: 5px 12px;
+                }
+                #webcam-container {
+                    max-width: 100%;
+                    aspect-ratio: 4/3;
+                }
+                .editor-main {
+                    padding: 14px;
+                }
+                .editor-sidebar .thumbnail {
+                    width: 50px;
+                    height: 50px;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .header-right {
+                    gap: 4px;
+                }
+                .btn-header {
+                    font-size: 10px;
+                    padding: 4px 10px;
+                }
+                #stickers .sticker {
+                    width: 44px;
+                    height: 44px;
+                }
+                .editor-sidebar .thumbnail {
+                    width: 42px;
+                    height: 42px;
+                }
+                #capture-btn {
+                    font-size: 14px;
+                    padding: 10px;
+                }
+            }
+        </style>
     </head>
 <body>
 
-    <!-- Header -->
     <div class="header">
-        <h1>My Website</h1>
-        <p>This is the header</p>
-		<button id="profile_button" onclick="window.location.href='profile.php'">profile</button>
-        <form action="" method="post">
-			<button name="disconnect" value="disconnect">disconnect</button>
-		</form>
-		 <button id="home_button" onclick="window.location.href='../home.php'">home</button>
+        <div class="header-left">
+            <h1>Camagru</h1>
+            <span class="tagline">create</span>
+        </div>
+        <div class="header-right">
+            <button class="btn-header btn-home" onclick="window.location.href='../home.php'">Home</button>
+            <button class="btn-header btn-profile" onclick="window.location.href='profile.php'">Profile</button>
+            <form action="" method="post" style="display:inline;">
+                <button class="btn-header btn-disconnect" name="disconnect" value="disconnect">sign out</button>
+            </form>
+        </div>
     </div>
 
-    <!-- Main body -->    
     <div class="main-content">
         <div class="body-content">
-
             <div class="editor-main">
                 <div id="webcam-container">
                     <video id="webcam" autoplay playsinline></video>
-                    <canvas id="preview" syle="display:none"></canvas>
-                    <button id="webcam-btn" onclick="backToWebcam()" style="display: none;">back to webcam</button>
+                    <canvas id="preview"></canvas>
+                    <button id="webcam-btn" onclick="backToWebcam()">back to webcam</button>
                     <input type="file" id="image-upload" accept=".jpeg,.jpg,.png">
                 </div>
                 <div id="stickers">
-            
                 </div>
-            
                 <button id="capture-btn" disabled>Capture</button>
-
             </div>
         </div>
-        
-        <!-- Sidebar -->
+
         <div class="sidebar">
             <div class="editor-sidebar">
                 <div id="user-posts"></div>
                 <form id="upload" action="/handlers/upload_handler.php" method="post" enctype="multipart/form-data">
                     <input type="file" name="file-upload" hidden>
                     <div id="tmp-thumbnails"></div>
-                    <input type="submit" name="submit">
+                    <input type="submit" name="submit" value="Upload">
                 </form>
             </div>
+        </div>
+    </div>
 
-            <ul>
-            </ul>
-            <script>
-                const video = document.getElementById('webcam');
-                const canvas = document.getElementById('preview');
-                const captureBtn = document.getElementById('capture-btn');
-                const uploadInput = document.getElementById('image-upload');
-                const webcamBtn = document.getElementById('webcam-btn');
-                let selectedSticker = null;
-                let usingUpload = false;
+    <div class="sticker-footer" id="sticker-footer"></div>
 
-                // start webcam
-                navigator.mediaDevices.getUserMedia({ video: true })
-                .then(stream => {video.srcObject = stream;})
-                .catch(err => {
+    <div class="footer">
+    </div>
+
+    <script>
+        const video = document.getElementById('webcam');
+        const canvas = document.getElementById('preview');
+        const captureBtn = document.getElementById('capture-btn');
+        const uploadInput = document.getElementById('image-upload');
+        const webcamBtn = document.getElementById('webcam-btn');
+        let selectedSticker = null;
+        let usingUpload = false;
+
+        // Start webcam
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => { video.srcObject = stream; })
+            .catch(err => {
+                video.style.display = 'none';
+                uploadInput.style.display = 'block';
+            });
+
+        uploadInput.addEventListener('change', event => {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                const img = new Image();
+                img.onload = function() {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    canvas.getContext('2d').drawImage(img, 0, 0);
                     video.style.display = 'none';
-                    uploadInput.style.display = 'block';
+                    canvas.style.display = 'block';
+                    webcamBtn.style.display = 'block';
+                    usingUpload = true;
+                };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function selectSticker(el, path) {
+            document.querySelectorAll('.sticker').forEach(s => s.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedSticker = path;
+            captureBtn.disabled = false;
+        }
+
+        function selectThumbnail() {
+            document.querySelectorAll('.thumbnail').forEach(thmb => thmb.classList.remove('selected'));
+            this.classList.add('selected');
+            const selectedThumbnail = this.src.split('/').pop();
+
+            const form = document.getElementById('upload');
+            let hiddenInput = form.querySelector('input[name="selected_thumbnail"]');
+            if (!hiddenInput) {
+                hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'selected_thumbnail';
+                form.appendChild(hiddenInput);
+            }
+            hiddenInput.value = selectedThumbnail;
+        }
+
+        function capture() {
+            const ctx = canvas.getContext('2d');
+            if (!usingUpload) {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                ctx.drawImage(video, 0, 0);
+            }
+            const data = canvas.toDataURL('image/jpeg');
+            fetch('/handlers/edit_handler.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ image: data, sticker: selectedSticker })
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log('hey ', data);
+                if (data.success) addThumbnail(data.file);
+                else console.log(data.error);
+            });
+        }
+
+        function addThumbnail(file) {
+            const sidebar = document.getElementById('tmp-thumbnails');
+            const img = document.createElement('img');
+            img.src = file;
+            img.className = 'thumbnail';
+            img.onclick = selectThumbnail;
+            img.addEventListener('dblclick', event => {
+                fetch('/handlers/edit_handler.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ delete_thumbnail: true, img_src: img.src })
                 });
+                img.remove();
+            });
+            sidebar.prepend(img);
+        }
 
-                uploadInput.addEventListener('change', event => {
-                    const file = event.target.files[0];
-                    if (!file) return ;
-                    const reader = new FileReader();
-                    reader.onload = function(ev) {
-                        const img = new Image();
-                        img.onload = function() {
-                            canvas.width = img.width;
-                            canvas.height = img.height;
-                            canvas.getContext('2d').drawImage(img, 0, 0);
-                            video.style.display = 'none';
-                            canvas.style.display = 'block';
-                            webcamBtn.style.display = 'block';
-                            usingUpload = true;
-                        };
-                        img.src = ev.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                });
-
-                function selectSticker(el, path) {
-                    // deselect all previous
-                    document.querySelectorAll('.sticker').forEach(s => s.classList.remove('selected'));
-                    el.classList.add('selected');
-                    selectedSticker = path;
-                    captureBtn.disabled = false;
-                }
-
-                function selectThumbnail() {
-                    document.querySelectorAll('.thumbnail').forEach(thmb => thmb.classList.remove('selected'));
-                    this.classList.add('selected');
-                    const selectedThumbnail= '/tmp/' + this.src.split('/').pop();
-
-                    const form = document.getElementById('upload');
-                    const formData = new FormData(form);
-                    let hiddenInput = form.querySelector('input[name="selected_thumbnail"]');
-                    if (!hiddenInput) {
-                        hiddenInput = document.createElement('input');
-                        hiddenInput.type = 'hidden';
-                        hiddenInput.name = 'selected_thumbnail';
-                        form.appendChild(hiddenInput);
-                    }
-                    hiddenInput.value = selectedThumbnail;
-                }
-
-                function capture() {
-                    const ctx = canvas.getContext('2d');
-                    if (!usingUpload) {
-                        canvas.width = video.videoWidth;
-                        canvas.height = video.videoHeight;
-                        ctx.drawImage(video, 0, 0); // webcam only, no sticker
-                    }
-                    const data = canvas.toDataURL('image/jpeg');
-                    fetch('/handlers/edit_handler.php', {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({ image: data, sticker: selectedSticker })
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) addThumbnail(data.file);
-                    });
-                }
-
-                function addThumbnail(file) {
-                    const sidebar = document.getElementById('tmp-thumbnails');
+        function loadThumbnails() {
+            fetch('/handlers/edit_handler.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ get_thumbs: true })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.files) return;
+                const sidebar = document.getElementById('tmp-thumbnails');
+                data.files.forEach(thumb => {
                     const img = document.createElement('img');
-                    img.src = '/tmp/' + file;
+                    img.src = data.path + thumb;
                     img.className = 'thumbnail';
                     img.onclick = selectThumbnail;
                     img.addEventListener('dblclick', event => {
                         fetch('/handlers/edit_handler.php', {
                             method: 'POST',
-                            headers: {'Content-Type': 'application/json'},
-                            body: JSON.stringify({delete_thumbnail: true, img_src: img.src})
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ delete_thumbnail: true, img_src: img.src })
                         });
-
                         img.remove();
                     });
                     sidebar.prepend(img);
-                }
-                
-                function loadThumbnails(){
-                    fetch('/handlers/edit_handler.php', {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({get_thumbs: true})
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (!data.files) return ;
-                        
-                        const sidebar = document.getElementById('tmp-thumbnails');
-                        data.files.forEach(thumb => {
-                            const img = document.createElement('img');
-                            img.src = '/tmp/' + thumb;
-                            img.className = 'thumbnail';
-                            img.onclick = selectThumbnail;
-                            img.addEventListener('dblclick', event => {
-                                fetch('/handlers/edit_handler.php', {
-                                    method: 'POST',
-                                    headers: {'Content-Type': 'application/json'},
-                                    body: JSON.stringify({delete_thumbnail: true, img_src: img.src})
-                                });
+                });
+            });
+        }
 
-                                img.remove();
-                            });
+        function backToWebcam() {
+            canvas.style.display = 'none';
+            video.style.display = 'block';
+            webcamBtn.style.display = 'none';
+            uploadInput.value = '';
+            usingUpload = false;
+        }
 
-                            sidebar.prepend(img);
-                        })
-                    })
-                }
-
-                
-                function backToWebcam() {
-                    canvas.style.display = 'none';
-                    video.style.display = 'block';
-                    webcamBtn.style.display = 'none';
-                    uploadInput.value = ''; // clear file selection
-                    usingUpload = false;
-                }
-
-                document.getElementById('capture-btn').addEventListener('click', capture);
-                loadThumbnails();
-            </script>
-        </div>
-    </div>
-
-    <div class="sticker-footer" id="sticker-footer">
-    </div>
-
-    <!-- Footer -->
-    <div class="footer">
-        <p>&copy; 2026 My Website. All rights reserved.</p>
-    </div>
+        document.getElementById('capture-btn').addEventListener('click', capture);
+        loadThumbnails();
+    </script>
 
 </body>
 </html>
