@@ -31,8 +31,6 @@
 			$tmp_fil = $_SESSION['tmp_dir'] . '/'. $_POST['selected_thumbnail'];
 
 			if (!copy($tmp_fil, $dest)) {
-				error_log("move_uploaded_file ". print_r($tmp_fil));
-				error_log('upload failed');
 				DOMerror('upload failed', $doc);
 				addStickers($stickers, $target, $doc);
 				echo $doc->saveHTML();

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="/style.css">
+		<style>
+			.cui {
+				font-family: Arial, Helvetica, sans-serif;
+				color:rgb(125, 125, 125)
+			}
+			
+			#welcome_header {
+				font-family: Arial, Helvetica, sans-serif;
+				font-size: 150%;
+			}
+
+			#email_info {
+				font-family: Arial, Helvetica, sans-serif;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="welcome_header"></div>
+		<a href="/home.php">home</a>
+		<form action="" method="post">
+			<button name="disconnect" value="disconnect">disconnect</button>
+		</form>
+		<br>
+		<div id="checkbox"><span>disable email notification </span></div>
+		<form action="/profile.php" method="post">
+		</form>
+		<script>
+			const checkbox = document.getElementById('checkbox');
+
+			checkbox.addEventListener('click', (e)=>{
+				fetch('/profile.php', {
+					method: 'POST',
+					headers: {'Content-Type': 'application/json'},
+					body: JSON.stringify({notification: e.target.checked, checked: true})
+				}
+				)
+			});
+		</script>
+		<br>
+		<div class="cui">change user info</div>
+		<form action="/profile.php" method="post">
+			<input type="text" name="username" placeholder="new username"><br>
+			<input type="text" name="email" placeholder="new email"><div id="email_info"></div><br>
+			<input type="submit" value="confirm">
+		</form>
+		<form action="/profile.php" method="post">
+			<input type="submit" name="reset_password" value="reset password">
+		</form>
+		<div id="reset_password"></div>
+	</body>
+</html>

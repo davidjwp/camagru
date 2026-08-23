@@ -3,6 +3,7 @@
     <head>
         <link rel="stylesheet" href="/style.css">
         <style>
+            /* Header */
             * {
                 margin: 0;
                 padding: 0;
@@ -103,6 +104,7 @@
                 border-color: rgba(255,255,255,0.12);
             }
 
+            /* Main content, body */
             .main-content {
                 display: flex;
                 flex: 1;
@@ -125,26 +127,35 @@
                 box-shadow: 0 2px 8px rgba(0,0,0,0.06);
             }
 
+            /* Webcam container and buttons */
             #webcam-container {
-                position: relative;
                 background: #1a1a2e;
+                display: block;
                 border-radius: 8px;
                 /* overflow: hidden; */
-                aspect-ratio: 4/3;
-                max-width: 640px;
-                margin: 0 auto;
+                /* max-width: 1080px; */
+                /* margin: 0 auto; */
+                position: relative;
+                min-height: 300px;
             }
 
-            #webcam-container video,
-            #webcam-container canvas {
-                width: 100%;
-                height: 100%;
+            #webcam-container video {
+                width: auto;
+                /* height: auto; */
+                /* position: absolute; */
+                top: 0;
+                left: 0;
                 display: block;
-                object-fit: cover;
+                /* object-fit: cover; */
             }
 
             #webcam-container canvas {
-                display: none;
+                display: block;
+                position: absolute;
+                top: 0;
+                left: 0;
+                /* z-index: 10; */
+                /* background-color: #1a1a2e; */
             }
 
             #webcam-container #webcam-btn {
@@ -169,7 +180,6 @@
             }
 
             #webcam-container #image-upload {
-                /* display: none; */
                 width: 100%;
                 height: 100%;
                 padding: 40px;
@@ -197,6 +207,7 @@
                 background: #764ba2;
             }
 
+            /* Stickers */
             #stickers {
                 display: flex;
                 flex-wrap: wrap;
@@ -255,6 +266,7 @@
                 transform: none;
             }
 
+            /* Sidebar */
             .sidebar {
                 width: 220px;
                 flex-shrink: 0;
@@ -337,12 +349,6 @@
                 margin-top: auto;
             }
 
-            .footer p {
-                color: rgba(255,255,255,0.4);
-                font-size: 12px;
-                letter-spacing: 0.3px;
-            }
-
             @media (max-width: 768px) {
                 .main-content {
                     flex-direction: column;
@@ -398,6 +404,7 @@
                     padding: 10px;
                 }
             }
+
         </style>
     </head>
 <body>
@@ -425,9 +432,8 @@
                     <button id="webcam-btn" onclick="backToWebcam()">back to webcam</button>
                     <input type="file" id="image-upload" accept=".jpeg,.jpg,.png">
                 </div>
-                <div id="stickers">
-                </div>
                 <button id="capture-btn" disabled>Capture</button>
+                <div id="stickers"></div>
             </div>
         </div>
 
@@ -456,14 +462,55 @@
         const webcamBtn = document.getElementById('webcam-btn');
         let selectedSticker = null;
         let usingUpload = false;
+        let stickerX = 0, stickerY = 0;
+        let isDragging = false;
+        let dragOffsetX, dragOffsetY;
+        const stickerImg = new Image();
+        const rect = video.getBoundingClientRect();
+            // canvas.width = rect.width;
+            // canvas.height = rect.height;
+            console.log(canvas);
 
         // Start webcam
         navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => { video.srcObject = stream; })
+            .then(stream => { video.srcObject = stream; 
+                video.onloadedmetadata = function() {
+            videoReady = true;
+            setupCanvas();
+            console.log('Webcam ready:', video.videoWidth, 'x', video.videoHeight);
+        };
+            })
             .catch(err => {
                 video.style.display = 'none';
                 uploadInput.style.display = 'block';
             });
+
+        function setupCanvas() {
+            // Wait for video to have metadata
+            if (video.videoWidth === 0) {
+                video.addEventListener('loadedmetadata', setupCanvas);
+                return;
+            }
+            
+            const rect = video.getBoundingClientRect();
+            const displayWidth = rect.width;
+            const naturalAspect = video.videoWidth / video.videoHeight;
+            
+            // Calculate the actual displayed height based on the natural aspect ratio
+            const displayHeight = displayWidth / naturalAspect;
+            
+            // Set canvas to match the video's DISPLAY size (what you see)
+            // canvas.width = displayWidth;
+            // canvas.height = displayHeight;
+            canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    stickerX = (canvas.width - stickerImg.width) / 2;
+    stickerY = (canvas.height - stickerImg.height) / 2;
+            
+            console.log('Canvas set to:', canvas.width, 'x', canvas.height);
+            console.log('Video native:', video.videoWidth, 'x', video.videoHeight);
+            console.log('Video display:', displayWidth, 'x', displayHeight);
+        }
 
         uploadInput.addEventListener('change', event => {
             const file = event.target.files[0];
@@ -472,9 +519,14 @@
             reader.onload = function(ev) {
                 const img = new Image();
                 img.onload = function() {
-                    canvas.width = img.width;
-                    canvas.height = img.height;
-                    canvas.getContext('2d').drawImage(img, 0, 0);
+                    const container = document.getElementById('webcam-container');
+                    const maxW = container.clientWidth;
+                    const ratio = Math.min(maxW / img.width, 1);
+
+                    // canvas.width = img.width * ratio;
+                    // canvas.height = img.height * ratio;
+
+                    canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
                     video.style.display = 'none';
                     canvas.style.display = 'block';
                     webcamBtn.style.display = 'block';
@@ -485,13 +537,48 @@
             reader.readAsDataURL(file);
         });
 
+        //green
+        canvas.addEventListener('mousedown', e => {
+            const rect = canvas.getBoundingClientRect();
+            const mx = e.clientX - rect.left;
+            const my = e.clientY - rect.top;
+            
+            // check if click is on sticker
+            if (mx >= stickerX && mx <= stickerX + stickerImg.width &&
+                my >= stickerY && my <= stickerY + stickerImg.height) {
+                isDragging = true;
+                dragOffsetX = mx - stickerX;
+                dragOffsetY = my - stickerY;
+            }
+        });
+
+        //green
+        canvas.addEventListener('mousemove', e => {
+            if (!isDragging) return;
+            const rect = canvas.getBoundingClientRect();
+            stickerX = e.clientX - rect.left - dragOffsetX;
+            stickerY = e.clientY - rect.top - dragOffsetY;
+        });
+
+        //green
+        canvas.addEventListener('mouseup', () => isDragging = false);
+        
         function selectSticker(el, path) {
             document.querySelectorAll('.sticker').forEach(s => s.classList.remove('selected'));
             el.classList.add('selected');
             selectedSticker = path;
-            captureBtn.disabled = false;
+            stickerImg.src = path;
+            stickerImg.onload = () => {
+                // center sticker by default
+                stickerX = (video.width - stickerImg.width) / 2;
+                stickerY = (video.height - stickerImg.height) / 2;
+                if (usingUpload) drawPreview(); // static image, draw once
+                else startPreviewLoop();        // webcam, draw continuously
+                captureBtn.disabled = false;
+            };
         }
 
+        //green
         function selectThumbnail() {
             document.querySelectorAll('.thumbnail').forEach(thmb => thmb.classList.remove('selected'));
             this.classList.add('selected');
@@ -509,21 +596,26 @@
         }
 
         function capture() {
-            const ctx = canvas.getContext('2d');
             if (!usingUpload) {
                 canvas.width = video.videoWidth;
                 canvas.height = video.videoHeight;
-                ctx.drawImage(video, 0, 0);
+                canvas.getContext('2d').drawImage(video, 0, 0);
             }
             const data = canvas.toDataURL('image/jpeg');
+            console.log('canvas = ',canvas);
+            console.log('selectedSticker = ',selectedSticker);
             fetch('/handlers/edit_handler.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ image: data, sticker: selectedSticker })
+                body: JSON.stringify({ 
+                    image: data, 
+                    sticker: selectedSticker, 
+                    stickerPos: {X: (stickerX), Y: (stickerY)},
+                    canvasWidth: canvas.width,
+                    canvasHeight: canvas.height})
             })
             .then(res => res.json())
             .then(data => {
-                console.log('hey ', data);
                 if (data.success) addThumbnail(data.file);
                 else console.log(data.error);
             });
@@ -580,6 +672,32 @@
             webcamBtn.style.display = 'none';
             uploadInput.value = '';
             usingUpload = false;
+        }
+
+        // update preview loop when webcam active
+        function startPreviewLoop() {
+            if (!videoReady) return;
+                
+                // Set canvas to match video display size
+                const rect = video.getBoundingClientRect();
+                const aspect = video.videoWidth / video.videoHeight;
+                
+                canvas.width = rect.width;
+                canvas.height = rect.width / aspect;
+                
+                canvas.style.display = 'block';
+            function loop() {
+                if (usingUpload) return;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0,0, canvas.width, canvas.height);
+                // const ctx = canvas.getContext('2d');
+                // ctx.drawImage(video, 0, 0);
+                if (selectedSticker && stickerImg.complete) {
+                    ctx.drawImage(stickerImg, stickerX, stickerY);
+                }
+                requestAnimationFrame(loop);
+            }
+            loop();
         }
 
         document.getElementById('capture-btn').addEventListener('click', capture);

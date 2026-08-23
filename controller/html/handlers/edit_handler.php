@@ -7,7 +7,7 @@
         echo json_encode(['success' => false]);
         exit;
     }
-    
+
     $user_tmp = '/var/www/html/tmp/' . $_SESSION['user']['id'] . '/';
     if (!is_dir($user_tmp)) {
         mkdir($user_tmp, 0755, true);
@@ -37,8 +37,9 @@
         unlink($thumb);
         exit ;
     }
+
     error_log("DEBUG 1");
-    // decode webcam image data
+    // decode webcam/uploaded image data
     $image_data = $data['image'];
     $image_data = preg_replace('/^data:image\/\w+;base64,/', '', $data['image']);
     $image_data = base64_decode($image_data);
@@ -60,27 +61,30 @@
         exit;
     }
     
-    // create sticker then alpha canvas then resize the sticker over that
     $sticker = imagecreatefrompng($sticker_full);
-    // $sticker_w = imagesx($sticker);
-    // $sticker_h = imagesy($sticker);
+    // create sticker then alpha canvas then resize the sticker over that
+    $sticker_w = imagesx($sticker);
+    $sticker_h = imagesy($sticker);
     
-    $sticker_resized = imagecreatetruecolor($width, $height);
-    imagealphablending($sticker_resized, false);
-    imagesavealpha($sticker_resized, true);
-    $transparent = imagecolorallocatealpha($sticker_resized, 0, 0, 0, 127);
     error_log("DEBUG 3");
-    // imagefill($sticker_resized, 0, 0, $transparent);
-    // imagecopyresampled($sticker_resized, $sticker, 0, 0, 0, 0, $width, $height, $sticker_w, $sticker_h);
-    // imagecopyresampled($sticker_resized, $sticker, 0, 0, 0, 0, $width, $height, $sticker_w, $sticker_h);
     
     //create black canvas then copy webcam on top then copy sticker on top
     $output = imagecreatetruecolor($width, $height);
     imagecopy($output, $webcam, 0,0,0,0, $width, $height);  
     imagealphablending($output, true);
+    
+    // $scale_x = $width / $data['canvasWidth'];
+    // $scale_y = $height / $data['canvasHeight'];
+
+    // $x = (int)($data['stickerPos']['X'] * $scale_x);
+    // $y = (int)($data['stickerPos']['Y'] * $scale_y);
+
+    $x = $data['stickerPos']['X'];
+    $y = $data['stickerPos']['Y'];
+    
     error_log("DEBUG 4");
     // imagecopy($output, $sticker_resized, 0,0,0,0, $width, $height);
-    imagecopy($output, $sticker, 0,0,0,0, $width, $height);
+    imagecopy($output, $sticker,$x,$y,0,0, $sticker_w, $sticker_h);
     error_log("DEBUG 5");
     // save to tmp
 
