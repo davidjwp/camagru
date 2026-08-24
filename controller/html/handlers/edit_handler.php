@@ -79,8 +79,8 @@
     // $x = (int)($data['stickerPos']['X'] * $scale_x);
     // $y = (int)($data['stickerPos']['Y'] * $scale_y);
 
-    $x = $data['stickerPos']['X'];
-    $y = $data['stickerPos']['Y'];
+    $x = $data['stickerX'];
+    $y = $data['stickerY'];
     
     error_log("DEBUG 4");
     // imagecopy($output, $sticker_resized, 0,0,0,0, $width, $height);
