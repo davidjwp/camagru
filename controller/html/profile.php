@@ -46,49 +46,52 @@
 			$_SESSION['user'][$ch] = $_POST[$ch];
 		}	
 	}
-
-	/*append password reset html*/
-	$doc = new DOMDocument();
-	$doc->loadHTMLFile('profile.html');
-
-	if (isset($_POST['reset_password']) || !empty($_POST["password1"]) || !empty($_POST["password2"])) AppendPasswordReset($doc);
-
+	
 	if (!empty($_POST["password1"]) && !empty($_POST["password2"])) {
 		if (strlen($_POST['password1']) < 5 || strlen($_POST['password1']) > 20 ||
 		!preg_match('/[!@#$%^&*(){}\-_=+?\/.>,<;:]/', $_POST['password1']) ||
 		!preg_match('/[A-Z]/', $_POST['password1']))
-			alert("password must contain at least one special char and one upper case");
-		else if ($_POST['password1'] !== $_POST['password2'])
+		alert("password must contain at least one special char and one upper case");
+		else if ($_POST['password1'] !== $_POST['password2']) 
 			alert("passwords don't match");
-
-		$stmt = $pdo->prepare("UPDATE users SET password = :password WHERE id = :id");
-		$stmt->execute([
-			':password' => password_hash($_POST['password1'], PASSWORD_DEFAULT), 
-			':id' => $user['id']
-			]);
+		else {
+			$stmt = $pdo->prepare("UPDATE users SET password = :password WHERE id = :id");
+			$stmt->execute([
+				':password' => password_hash($_POST['password1'], PASSWORD_DEFAULT), 
+				':id' => $user['id']
+				]);
+		}
 	}
-	
+
+	$doc = new DOMDocument();
+	$doc->loadHTMLFile('profile.html');
 	$stmt = $pdo->prepare("SELECT notification FROM users WHERE id = :id");
 	$stmt->execute([":id"=>$_SESSION['user']['id']]);
 	$notification = $stmt->fetch()['notification'] ? 1: 0;
 
-	$target = $doc->getElementById('checkbox');
-	$checkbox = $doc->createElement('input');
-	$checkbox->setAttribute('type', 'checkbox');
-	if ($notification) $checkbox->removeAttribute('checked'); 
-	else $checkbox->setAttribute('checked', 'checked');
+	$target = $doc->getElementById('toggle');
+	$toggle = $doc->createElement('input');
+	$toggle->setAttribute('type', 'checkbox');
+	$toggle->setAttribute('id', 'notif-toggle');
+	if (!$notification) $toggle->removeAttribute('checked'); 
+	else $toggle->setAttribute('checked', 'checked');
 
-	// $target->appendChild($checkbox);
+	$span = $doc->createElement('span');
+	$span->setAttribute('class', 'slider');
+
+	$target->appendChild($toggle);
+	$target->appendChild($span);
 	$data = json_decode(file_get_contents('php://input'), true);
 
 	$doc->getElementById('welcome_header')->nodeValue = "Welcome ". $user['username'];
-	$doc->getElementById('email_info')->nodeValue = $user['email'];
-	echo $doc->saveHTML();
+	$doc->getElementById('email_display')->nodeValue = $user['email'];
 	if (isset($data['checked'])) {
-		$notification = $data['notification'] ? 0 : 1;
-		error_log("NOTIFICATION PRESENT ". $notification . " ". $user['id']);
+		$notification = $data['notification'] ? 1 : 0;
 		$stmt = $pdo->prepare("UPDATE users SET notification = :notification WHERE id = :id");
 		$stmt->execute([":notification"=>$notification, ":id"=>$user['id']]);
+		echo json_encode(['success'=>true]);
+		exit ;
 	}
 
+	echo $doc->saveHTML();
 	exit;

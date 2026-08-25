@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<link rel="stylesheet" href="/style.css">
 		<style>
 			* {
 				margin: 0;
@@ -17,7 +16,6 @@
 				background: #f0f2f5;
 			}
 
-			/* ===== HEADER ===== */
 			.header {
 				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 				padding: 14px 30px;
@@ -56,7 +54,6 @@
 				flex-wrap: wrap;
 			}
 
-			/* ===== HEADER BUTTONS ===== */
 			.btn-header {
 				padding: 7px 16px;
 				border: none;
@@ -105,7 +102,6 @@
 				border-color: rgba(255,255,255,0.12);
 			}
 
-			/* ===== MAIN CONTENT ===== */
 			.main-content {
 				flex: 1;
 				padding: 30px 24px;
@@ -114,7 +110,6 @@
 				width: 100%;
 			}
 
-			/* ===== PROFILE CARD ===== */
 			.profile-card {
 				background: white;
 				border-radius: 16px;
@@ -148,14 +143,12 @@
 				margin-bottom: 24px;
 			}
 
-			/* ===== DIVIDER ===== */
 			.divider {
 				border: none;
 				border-top: 1px solid #e2e8f0;
 				margin: 20px 0;
 			}
 
-			/* ===== FORM SECTIONS ===== */
 			.section-label {
 				font-size: 13px;
 				font-weight: 600;
@@ -201,7 +194,6 @@
 				display: block;
 			}
 
-			/* ===== BUTTONS ===== */
 			.btn-primary {
 				padding: 10px 24px;
 				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -257,7 +249,6 @@
 				color: white;
 			}
 
-			/* ===== CHECKBOX TOGGLE ===== */
 			.toggle-row {
 				display: flex;
 				align-items: center;
@@ -317,7 +308,6 @@
 				transform: translateX(20px);
 			}
 
-			/* ===== STATUS MESSAGE ===== */
 			.status-msg {
 				padding: 10px 14px;
 				border-radius: 8px;
@@ -340,7 +330,6 @@
 				border: 1px solid #f5c6c6;
 			}
 
-			/* ===== FOOTER ===== */
 			.footer {
 				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 				padding: 12px 30px;
@@ -355,7 +344,6 @@
 				letter-spacing: 0.3px;
 			}
 
-			/* ===== RESPONSIVE ===== */
 			@media (max-width: 600px) {
 				.header {
 					padding: 10px 14px;
@@ -384,7 +372,6 @@
 	</head>
 	<body>
 
-		<!-- ===== HEADER ===== -->
 		<div class="header">
 			<div class="header-left">
 				<h1>Camagru</h1>
@@ -399,29 +386,23 @@
 			</div>
 		</div>
 
-		<!-- ===== MAIN CONTENT ===== -->
 		<div class="main-content">
 			<div class="profile-card">
 
-				<!-- Avatar & Welcome -->
 				<div class="avatar" id="avatar">U</div>
 				<h2 id="welcome_header">Welcome back</h2>
 				<div class="email-display" id="email_display">user@example.com</div>
 
 				<hr class="divider">
 
-				<!-- Notification Toggle -->
 				<div class="toggle-row">
 					<label for="notif-toggle">Email notifications</label>
-					<div class="switch">
-						<input type="checkbox" id="notif-toggle">
-						<span class="slider"></span>
-					</div>
+					<label class='switch' id="toggle">
+					</label>
 				</div>
 
 				<hr class="divider">
 
-				<!-- Change Username / Email -->
 				<span class="section-label">Update profile</span>
 				<form class="profile-form" action="/profile.php" method="post">
 					<input type="text" name="username" placeholder="New username">
@@ -432,40 +413,27 @@
 
 				<hr class="divider">
 
-				<!-- Reset Password -->
 				<span class="section-label">Security</span>
-				<form class="profile-form" action="/profile.php" method="post">
+
+				<form class="profile-form" id="profileForm" action="/profile.php" method="post">
+					<input type="password" autocomplete="off" name="password1" placeholder="new password">
+					<input type="password" autocomplete="off" name="password2" placeholder="confirm new password">
 					<button class="btn-secondary" type="submit" name="reset_password" value="1">Reset password</button>
 				</form>
 
-				<!-- Status Message -->
 				<div class="status-msg" id="statusMsg"></div>
 				<div id="reset_password"></div>
 
 			</div>
 		</div>
 
-		<!-- ===== FOOTER ===== -->
 		<div class="footer">
 			<p></p>
 		</div>
 
-		<!-- ===== SCRIPTS ===== -->
 		<script>
-			// Load user data
-			// fetch('/api/user.php')
-			// 	.then(res => res.json())
-			// 	.then(user => {
-			// 		if (user.username) {
-			// 			document.getElementById('welcome_header').textContent = 'Welcome, ' + user.username;
-			// 			document.getElementById('email_display').textContent = user.email;
-			// 			document.getElementById('avatar').textContent = user.username.charAt(0).toUpperCase();
-			// 		}
-			// 	})
-			// 	.catch(() => {});
-
-			// Notification toggle
 			const toggle = document.getElementById('notif-toggle');
+
 			toggle.addEventListener('change', function() {
 				fetch('/profile.php', {
 					method: 'POST',
@@ -477,6 +445,7 @@
 				})
 				.then(res => res.json())
 				.then(data => {
+					console.log(data);
 					if (data.success) {
 						showStatus('Notification settings updated', 'success');
 					}
@@ -484,17 +453,6 @@
 				.catch(() => showStatus('Failed to update settings', 'error'));
 			});
 
-			// Load notification state
-			// fetch('/api/notification.php')
-			// 	.then(res => res.json())
-			// 	.then(data => {
-			// 		if (data.enabled !== undefined) {
-			// 			toggle.checked = data.enabled;
-			// 		}
-			// 	})
-			// 	.catch(() => {});
-
-			// Status messages
 			function showStatus(message, type) {
 				const el = document.getElementById('statusMsg');
 				el.textContent = message;
@@ -503,14 +461,6 @@
 				el._timeout = setTimeout(() => {
 					el.className = 'status-msg';
 				}, 4000);
-			}
-
-			// Check URL params for success/error
-			const params = new URLSearchParams(window.location.search);
-			if (params.get('updated') === '1') {
-				showStatus('Profile updated successfully!', 'success');
-			} else if (params.get('error')) {
-				showStatus(params.get('error'), 'error');
 			}
 		</script>
 

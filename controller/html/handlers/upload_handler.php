@@ -8,7 +8,7 @@
 	$doc->loadHTMLFile("../editor.html");
 	libxml_clear_errors();
 	$stickers = glob('/var/www/html/Stickers/*.png');
-	$target = $doc->getElementById("sticker-footer");
+	$target = $doc->getElementById("stickers");
 	
 	if (!isset($_SESSION['user'])) {
 		header('location: ../index.php');

@@ -33,13 +33,13 @@
 	$page = isset($_GET['page']) ? $_GET['page']: 1;
 	
 	$OFFSET = ($page - 1) * $LIMIT;
-	$stmt = $pdo->prepare('SELECT posts.*, users.username, COUNT(DISTINCT likes.user_id) as like_count
-	FROM posts LEFT JOIN users ON posts.user_id = users.id LEFT JOIN likes ON posts.id = likes.post_id
-	GROUP BY posts.id ORDER BY posts.created_at DESC LIMIT :lmt OFFSET :ost');
+	$stmt = $pdo->prepare('SELECT * FROM posts ORDER BY posts.created_at DESC LIMIT :lmt OFFSET :ost');
+	// $stmt = $pdo->prepare('SELECT posts.* FROM posts GROUP BY posts.id ORDER BY posts.created_at DESC LIMIT :lmt OFFSET :ost');
 	$stmt->bindValue(":lmt", $LIMIT, PDO::PARAM_INT);
 	$stmt->bindValue(":ost", $OFFSET, PDO::PARAM_INT);
 	$stmt->execute();
 	$posts = $stmt->fetchAll();
+	if (empty($posts)) error_log("EMPTY POSTS SODHAUSODH OASHDOU I");
 
 	if (!empty($posts)) LoadPosts($doc, $posts);
 	$nav = $doc->getElementById('pagination');

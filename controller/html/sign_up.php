@@ -1,7 +1,7 @@
 <?php
 	require_once 'functs.php';
 	include ("sign_up.html");
-	
+
 	if (!empty($_POST)) {
 		$ver = 0;
 		if (!empty($_POST['username'])) $ver |= 1;
@@ -9,14 +9,20 @@
 		if (!empty($_POST['email'])) $ver |= 4;
 
 		/*change error warnings to small unintrusive pop ups later on*/
-		if ($ver != 7) alert("missing Username, password or email");
+		if ($ver != 7) {alert("missing Username, password or email"); exit ;}
 
-		if (strlen($_POST['username']) < 5 || strlen($_POST['username']) > 20)
-			alert("username at least 5 char long and no longer than 20 chars");
-		else if (strlen($_POST['password']) < 5 || strlen($_POST['password']) > 20 ||
+		if (strlen($_POST['username']) < 5 || strlen($_POST['username']) > 20) {
+			alert("username at least 5 char long and no longer than 20 chars"); 
+			exit ;
+		}	
+
+		if (strlen($_POST['password']) < 5 || strlen($_POST['password']) > 20 ||
 		!preg_match('/[!@#$%^&*(){}\-_=+?\/.>,<;:]/', $_POST['password']) ||
-		!preg_match('/[A-Z]/', $_POST['password']))
+		!preg_match('/[A-Z]/', $_POST['password'])) {
 			alert("password must contain at least one special char and one upper case");
+			exit ;
+		}
+
 		if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
     		alert("Invalid email address");
 
@@ -29,17 +35,18 @@
 		$token = random_bytes(32);
 
 		/*checks that user exists then insert user row into users table*/
-		$stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username AND email = :email");
+		$stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username OR email = :email");
 		$stmt->execute([':username' => $_POST["username"],':email'=> $_POST['email']]);
 		$user = $stmt->fetch();
 		if (!$user) {
-			$stmt = $pdo->prepare("INSERT INTO users (username, email, password, verification_token) 
-			VALUES (:username, :email, :password, :token)");
+			$stmt = $pdo->prepare("INSERT INTO users (username, email, password, verification_token, notification) 
+			VALUES (:username, :email, :password, :token, :notification)");
 			$stmt->execute([
 				':username' => $_POST['username'],
 				':email' => $_POST['email'],
 				':password' => password_hash($_POST['password'], PASSWORD_DEFAULT),
-				':token' => bin2hex($token)
+				':token' => bin2hex($token),
+				':notification'=>1
 			]);
 			sendMail(['type'=>"token","value"=> $token], "verification", $_POST['email']);
 		}

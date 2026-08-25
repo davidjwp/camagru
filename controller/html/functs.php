@@ -1,81 +1,113 @@
 <?php
 	
-	function post($doc, $post, $comments, $comment_count, $liked, $is_user) {
-		$post_target = $doc->getElementById('post') ;
-		$com_target = $doc->getElementById('comments');
+function post($doc, $post, $comments, $comment_count, $liked, $is_user) {
+    $post_target = $doc->getElementById('post');
+    $com_target = $doc->getElementById('comments');
 
-		$image = $doc->createElement('img') ;
-		$image->setAttribute('class', 'post_image');
-		$image->setAttribute('src', '/uploads/'.$post[0]['image_path']);
+    // --- Post Meta (user info) ---
+    $meta = $doc->createElement('div');
+    $meta->setAttribute('class', 'post-meta');
 
-		$likes = $doc->createElement('div');
-		$likes_counter = $doc->createElement('span');
-		$likes_counter->nodeValue = strval($post[0]["like_count"]) ." likes";
-		$likes->setAttribute('class', 'like');
-		$likes_counter->setAttribute('id', 'likes_counter');
-		
-		//heart svg
-		$svg = $doc->createElement('svg');
-		$liked ? $svg->setAttribute('fill', "#ff0000"): $svg->setAttribute('fill', "#000000");;
-		$svg->setAttribute('width', "30px");
-		$svg->setAttribute('height', "30px");
-		$svg->setAttribute('viewbox', "0 0 24 24");
-		$svg->setAttribute('xmlns', "http://www.w3.org/2000/svg");
-		$svg->setAttribute('onclick', "toggleLike(".$post[0]['id'].",".$liked.",".$post[0]["like_count"].")");
-		$svg->setAttribute('class', "heart");
-		$svg->setAttribute('id', "heart".$post[0]['id']);
+    $avatar = $doc->createElement('div');
+    $avatar->setAttribute('class', 'avatar');
+    $avatar->nodeValue = strtoupper(substr($post[0]['username'], 0, 1));
+    $meta->appendChild($avatar);
 
-		$path = $doc->createElement('path');
-		$path->setAttribute('d', "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 
-		3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z");
-		$svg->appendChild($path);
-		
-		
-		$likes->appendChild($likes_counter);
-		$likes->appendChild($svg);
-		if ($is_user) {
-			$del = $doc->createElement('button');
-			$del->nodeValue = 'delete post';
-			$del->setAttribute('class', 'delete_button');
-			$del->setAttribute('onClick', "del()");
-			$likes->appendChild($del);
-		}
+    $username = $doc->createElement('span');
+    $username->setAttribute('class', 'username');
+    $username->nodeValue = $post[0]['username'];
+    $meta->appendChild($username);
 
-		//creating comments
-		$com_div = $doc->createElement('div');
-		$com_div->setAttribute('class', 'comments');
-		if ($comment_count) {
-			foreach ($comments as $c) {
-				$com = $doc->createElement('div');
-				$com_cont = $doc->createElement('div');
-				$com_cont->nodeValue = $c['content'];
-				$com->setAttribute('class', 'comment');
+    $time = $doc->createElement('span');
+    $time->setAttribute('class', 'post-time');
+    $time->nodeValue = date('M j, Y', strtotime($post[0]['created_at']));
+    $meta->appendChild($time);
 
-				$com_info = $doc->createElement('div');
-				$com_info->setAttribute('class', 'com_info');
+    $post_target->appendChild($meta);
 
-				$com_time = $doc->createElement('div');
-				$com_time->setAttribute('class', 'com_time');
-				$com_time->nodeValue = $c['created_at'];
-				
-				$com_user = $doc->createElement('div');
+    // --- Image ---
+    $image = $doc->createElement('img');
+    $image->setAttribute('class', 'post-image');
+    $image->setAttribute('src', '/uploads/' . $post[0]['image_path']);
+    $post_target->appendChild($image);
 
-				$com_user->setAttribute('class', 'com_user');
-				$com_user->nodeValue = $c['username'];
+    // --- Actions (likes + delete) ---
+    $actions = $doc->createElement('div');
+    $actions->setAttribute('class', 'post-actions');
 
-				$com_info->appendChild($com_user);
-				$com_info->appendChild($com_time);
-				$com->appendChild($com_info);
-				$com->appendChild($com_cont);
-				$com_div->appendChild($com);
-			}
-		}
-		
-		$post_target->appendChild($image);
-		$post_target->appendChild($likes);
-		$com_target->appendChild($com_div);
-	}
+    $like_btn = $doc->createElement('button');
+    $like_btn->setAttribute('class', 'like-btn');
+    $like_btn->setAttribute('onclick', "toggleLike(" . $post[0]['id'] . "," . ($liked ? 'true' : 'false') . "," . $post[0]['like_count'] . ")");
 
+    // Heart SVG
+    $svg = $doc->createElementNS('http://www.w3.org/2000/svg', 'svg');
+    $svg->setAttribute('class', 'heart' . ($liked ? ' liked' : ''));
+    $svg->setAttribute('id', 'heart' . $post[0]['id']);
+    $svg->setAttribute('width', '28');
+    $svg->setAttribute('height', '28');
+    $svg->setAttribute('viewBox', '0 0 24 24');
+    $svg->setAttribute('fill', $liked ? '#e53e3e' : 'none');
+    $svg->setAttribute('stroke', '#e53e3e');
+    $svg->setAttribute('stroke-width', '2');
+
+    $path = $doc->createElement('path');
+    $path->setAttribute('d', 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z');
+    $svg->appendChild($path);
+
+    $like_btn->appendChild($svg);
+
+    $like_count = $doc->createElement('span');
+    $like_count->setAttribute('class', 'like-count');
+    $like_count->setAttribute('id', 'likes_counter');
+    $like_count->nodeValue = $post[0]['like_count'] . ' likes';
+    $like_btn->appendChild($like_count);
+
+    $actions->appendChild($like_btn);
+
+    if ($is_user) {
+        $del = $doc->createElement('button');
+        $del->setAttribute('class', 'delete-btn');
+        $del->setAttribute('onclick', 'del()');
+        $del->nodeValue = '🗑 Delete';
+        $actions->appendChild($del);
+    }
+
+    $post_target->appendChild($actions);
+
+    // --- Comments ---
+    if ($comment_count) {
+        foreach ($comments as $c) {
+            $com = $doc->createElement('div');
+            $com->setAttribute('class', 'comment');
+
+            $info = $doc->createElement('div');
+            $info->setAttribute('class', 'com_info');
+
+            $user = $doc->createElement('span');
+            $user->setAttribute('class', 'com_user');
+            $user->nodeValue = $c['username'];
+            $info->appendChild($user);
+
+            $time = $doc->createElement('span');
+            $time->setAttribute('class', 'com_time');
+            $time->nodeValue = date('M j, Y g:i A', strtotime($c['created_at']));
+            $info->appendChild($time);
+
+            $content = $doc->createElement('div');
+            $content->setAttribute('class', 'com_cont');
+            $content->nodeValue = htmlspecialchars($c['content']);
+
+            $com->appendChild($info);
+            $com->appendChild($content);
+            $com_target->appendChild($com);
+        }
+    } else {
+        $empty = $doc->createElement('div');
+        $empty->setAttribute('class', 'no-comments');
+        $empty->nodeValue = 'No comments yet. Be the first!';
+        $com_target->appendChild($empty);
+    }
+}
 	function addStickers($stickers, $target, $doc) {
 		foreach ($stickers as $sticker) {
 			$filename = basename($sticker);
@@ -98,7 +130,7 @@
 		$target->appendChild($err);
 	}
 
-	function alert($msg) { exit ("<script>alert('Error: ".$msg."');</script>");}
+	function alert($msg) {echo "<script>alert('Error: ".$msg."');</script>";}
 
 	function LoadPosts($doc, $posts) {
 		$target = $doc->getElementById('posts');

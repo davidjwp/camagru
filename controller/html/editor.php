@@ -31,7 +31,7 @@
 
 	// $stickers = "/Stickers";
 	$stickers = glob('/var/www/html/Stickers/*.png');
-	$target = $doc->getElementById("sticker-footer");
+	$target = $doc->getElementById("stickers");
 	addStickers($stickers, $target, $doc);
 	// $stmt = $pdo->prepare("SELECT image_path FROM posts WHERE user_id = :user_id ORDER BY created_at DESC");
 	// $stmt->execute([":user_id"=>$_SESSION['user']['id']]);
