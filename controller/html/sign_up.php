@@ -8,7 +8,6 @@
 		if (!empty($_POST['password'])) $ver |= 2;
 		if (!empty($_POST['email'])) $ver |= 4;
 
-		/*change error warnings to small unintrusive pop ups later on*/
 		if ($ver != 7) {alert("missing Username, password or email"); exit ;}
 
 		if (strlen($_POST['username']) < 5 || strlen($_POST['username']) > 20) {
@@ -23,8 +22,10 @@
 			exit ;
 		}
 
-		if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
+		if (!isset($_POST['email']) || !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
     		alert("Invalid email address");
+			exit ;
+		}
 
 		$pdo = new PDO(
 			"mysql:host=model;dbname=camagru;charset=utf8",
@@ -49,6 +50,7 @@
 				':notification'=>1
 			]);
 			sendMail(['type'=>"token","value"=> $token], "verification", $_POST['email']);
+			alert("a verification email was sent to ". htmlspecialchars($_POST['email']));
 		}
 		else if (!$user['is_verified']) sendMail(['type'=>"token","value"=> $token], "verification", $_POST["email"]);
 		else alert("user already exists");

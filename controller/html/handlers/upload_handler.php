@@ -1,6 +1,6 @@
 <?php
-	session_start();
 	require_once '../functs.php';
+	session_start();
 	
 	//get doc and put down errors due to DOMDoc php ver
 	$doc = new DOMDocument();
@@ -13,7 +13,7 @@
 	if (!isset($_SESSION['user'])) {
 		header('location: ../index.php');
 		exit;
-		}
+	}
 		
 		$pdo = new PDO(
 			"mysql:host=model;dbname=camagru;charset=utf8",

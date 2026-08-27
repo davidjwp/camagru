@@ -1,7 +1,7 @@
 <?php 	
+    require_once '../functs.php';
 	ob_start();
     session_start();
-    require_once '../functs.php';
 
     if (!isset($_SESSION['user'])) {
         echo json_encode(['success' => false]);
@@ -38,7 +38,6 @@
         exit ;
     }
 
-    error_log("DEBUG 1");
     // decode webcam/uploaded image data
     $image_data = $data['image'];
     $image_data = preg_replace('/^data:image\/\w+;base64,/', '', $data['image']);
@@ -51,7 +50,6 @@
     imagealphablending($webcam, true);
     imagesavealpha($webcam, true);
     
-    error_log("DEBUG 2");
     // get sticker path
     $sticker_path = basename($data['sticker']);
     $sticker_full = '/var/www/html/Stickers/' . $sticker_path;
@@ -66,27 +64,17 @@
     $sticker_w = imagesx($sticker);
     $sticker_h = imagesy($sticker);
     
-    error_log("DEBUG 3");
     
     //create black canvas then copy webcam on top then copy sticker on top
     $output = imagecreatetruecolor($width, $height);
     imagecopy($output, $webcam, 0,0,0,0, $width, $height);  
     imagealphablending($output, true);
     
-    // $scale_x = $width / $data['canvasWidth'];
-    // $scale_y = $height / $data['canvasHeight'];
-
-    // $x = (int)($data['stickerPos']['X'] * $scale_x);
-    // $y = (int)($data['stickerPos']['Y'] * $scale_y);
-
     $x = $data['stickerX'];
     $y = $data['stickerY'];
     
-    error_log("DEBUG 4");
     // imagecopy($output, $sticker_resized, 0,0,0,0, $width, $height);
     imagecopy($output, $sticker,$x,$y,0,0, $sticker_w, $sticker_h);
-    error_log("DEBUG 5");
-    // save to tmp
 
     $filename = bin2hex(random_bytes(16)) . '.jpg';
     $dest = $user_tmp . $filename;

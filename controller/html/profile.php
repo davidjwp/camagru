@@ -1,6 +1,7 @@
 <?php
 	require_once 'functs.php';
 	session_start();
+	session_regenerate_id(true);
 
 	if (!isset($_SESSION['user'])) {
 		header('location: /index.php');
