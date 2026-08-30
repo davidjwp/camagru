@@ -23,7 +23,7 @@
 				padding: 40px 35px;
 				border-radius: 16px;
 				box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-				width: 100%;
+				width: 90%;
 				max-width: 380px;
 				transition: transform 0.2s;
 			}
@@ -151,6 +151,117 @@
 				border-radius: 6px;
 				display: none;
 			}
+			
+			@media screen and (max-device-width: 700px) {
+				html {
+					font-size: 25px; 
+				}
+
+				body {
+					padding: 12px;
+					align-items: center;
+				}
+
+				.login-container {
+					padding: 2rem 1.5rem;
+					/* width: 90%; */
+					max-width: 100%;
+					border-radius: 14px;
+					box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+				}
+
+				.login-container:hover {
+					transform: none;
+				}
+
+				h2 {
+					font-size: 1.6rem;
+					margin-bottom: 1.2rem;
+				}
+
+				input[type="text"],
+				input[type="password"] {
+					padding: 1rem 1.2rem;
+					font-size: 1.1rem;
+					margin: 0.6rem 0;
+					border-width: 2px;
+				}
+
+				input[type="submit"],
+				.signup-btn {
+					padding: 1rem;
+					font-size: 1.1rem;
+					border-radius: 10px;
+				}
+
+				.links a {
+					font-size: 1rem;
+				}
+
+				.divider span {
+					font-size: 0.95rem;
+				}
+
+				.error-msg {
+					font-size: 1rem;
+					padding: 0.6rem;
+				}
+			}
+
+			@media screen and (min-device-width: 3000px) {
+				html {
+					font-size: 25px; 
+				}
+
+				body {
+					padding: 12px;
+					align-items: center;
+				}
+
+				.login-container {
+					padding: 2rem 1.5rem;
+					max-width: 50%;
+					border-radius: 14px;
+					box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+				}
+
+				.login-container:hover {
+					transform: none;
+				}
+
+				h2 {
+					font-size: 1.6rem;
+					margin-bottom: 1.2rem;
+				}
+
+				input[type="text"],
+				input[type="password"] {
+					padding: 1rem 1.2rem;
+					font-size: 1.1rem;
+					margin: 0.6rem 0;
+					border-width: 2px;
+				}
+
+				input[type="submit"],
+				.signup-btn {
+					padding: 1rem;
+					font-size: 1.1rem;
+					border-radius: 10px;
+				}
+
+				.links a {
+					font-size: 1rem;
+				}
+
+				.divider span {
+					font-size: 0.95rem;
+				}
+
+				.error-msg {
+					font-size: 1rem;
+					padding: 0.6rem;
+				}
+			}
 		</style>
 	</head>
 	<body>
@@ -160,6 +271,7 @@
 			<div class="error-msg" id="errorMsg">Invalid username or password</div>
 
 			<form action="/index.php" method="post">
+				<input type="hidden" name="csrf-token" value="<?= $_SESSION['csrf-token'] ?>">
 				<input type="text" name="username" placeholder="Username or email" required>
 				<input type="password" name="password" placeholder="Password" required>
 

@@ -8,22 +8,24 @@
 	);
 	
 	if (isset($_POST['username']) && isset($_POST['email'])) {
-		if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
-			alert("Invalid email address");
+		if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) alert("Invalid email address");
+		else {
+			$stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email AND is_verified = 1 AND username = :username");
+			$stmt->execute([':email' => $_POST['email'], ':username'=> $_POST['username']]);
+			$user = $stmt->fetch();
+			if (!$user) alert("user not found");
+			else {
+				$token = random_bytes(32);
 		
-		$stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email AND is_verified = 1 AND username = :username");
-		$stmt->execute([':email' => $_POST['email'], ':username'=> $_POST['username']]);
-		$user = $stmt->fetch();
-		if (!$user) alert("user not found");
+				$stmt = $pdo->prepare("UPDATE users SET verification_token = :token WHERE id = :id");
+				$stmt->execute([
+					':token' => bin2hex($token),
+					':id' => $user['id']
+				]);
+				sendMail(['type'=>"token","value"=> $token], "password_reset", $_POST["email"]);
 
-		$token = random_bytes(32);
-
-		$stmt = $pdo->prepare("UPDATE users SET verification_token = :token WHERE id = :id");
-		$stmt->execute([
-			':token' => bin2hex($token),
-			':id' => $user['id']
-		]);
-		sendMail(['type'=>"token","value"=> $token], "password_reset", $_POST["email"]);
+			}
+		}
 	}
 
 	include '../send_password_reset.html';

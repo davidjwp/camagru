@@ -1,14 +1,13 @@
 add client/server side form validation		-
-(for server side check form data validity)
+(for server side check form data validity
+check profile and comments)
 
 protect against SQL injections				-
 (use prepared sql statements)
 
 protect against XSS js/html injections		-
 (use htmlspecialchars and createTextNode
-check for page output of user data like email or username)
-
-check input data							-
-(should already be done)
+check for page output of user data like email or username
+also check profile and comments)
 
 checking back all mandatory parts			-

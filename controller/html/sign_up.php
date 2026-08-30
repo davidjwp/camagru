@@ -1,8 +1,15 @@
 <?php
+	session_start();
 	require_once 'functs.php';
 	include ("sign_up.html");
 
-	if (!empty($_POST)) {
+	if (empty($_POST['csrf-token'])) {
+		$_SESSION['csrf-token'] = bin2hex(random_bytes(32));
+	}
+
+	if (!empty($_POST) && isset($_POST['csrf-token']) && 
+	$_SESSION['csrf-token'] === $_POST['csrf-token']) {
+
 		$ver = 0;
 		if (!empty($_POST['username'])) $ver |= 1;
 		if (!empty($_POST['password'])) $ver |= 2;
@@ -13,7 +20,7 @@
 		if (strlen($_POST['username']) < 5 || strlen($_POST['username']) > 20) {
 			alert("username at least 5 char long and no longer than 20 chars"); 
 			exit ;
-		}	
+		}
 
 		if (strlen($_POST['password']) < 5 || strlen($_POST['password']) > 20 ||
 		!preg_match('/[!@#$%^&*(){}\-_=+?\/.>,<;:]/', $_POST['password']) ||
