@@ -17,7 +17,7 @@
 		$stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username");
 		$stmt->execute([':username' => $_POST['username']]);
 		$user = $stmt->fetch();
-		
+
 		//if user is right start session and regenerate a new id to avoid session fixation
 		if ($user && password_verify($_POST['password'], $user['password'])) {
 			session_regenerate_id(true);

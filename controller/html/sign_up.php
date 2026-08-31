@@ -1,7 +1,7 @@
 <?php
 	session_start();
 	require_once 'functs.php';
-	include ("sign_up.html");
+	$alert;
 
 	if (empty($_POST['csrf-token'])) {
 		$_SESSION['csrf-token'] = bin2hex(random_bytes(32));
@@ -9,27 +9,33 @@
 
 	if (!empty($_POST) && isset($_POST['csrf-token']) && 
 	$_SESSION['csrf-token'] === $_POST['csrf-token']) {
-
 		$ver = 0;
 		if (!empty($_POST['username'])) $ver |= 1;
 		if (!empty($_POST['password'])) $ver |= 2;
 		if (!empty($_POST['email'])) $ver |= 4;
 
-		if ($ver != 7) {alert("missing Username, password or email"); exit ;}
+		if ($ver != 7) {
+			include "sign_up.html";
+			alert("missing Username, password or email"); 
+			exit ;
+		}
 
-		if (strlen($_POST['username']) < 5 || strlen($_POST['username']) > 20) {
-			alert("username at least 5 char long and no longer than 20 chars"); 
+		if (strlen($_POST['username']) < 5 || strlen($_POST['username']) > 20) {	
+			include "sign_up.html";
+			alert("username at least 5 char long and no longer than 20 chars");
 			exit ;
 		}
 
 		if (strlen($_POST['password']) < 5 || strlen($_POST['password']) > 20 ||
 		!preg_match('/[!@#$%^&*(){}\-_=+?\/.>,<;:]/', $_POST['password']) ||
 		!preg_match('/[A-Z]/', $_POST['password'])) {
+			include "sign_up.html";
 			alert("password must contain at least one special char and one upper case");
 			exit ;
 		}
 
 		if (!isset($_POST['email']) || !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+			include "sign_up.html";
     		alert("Invalid email address");
 			exit ;
 		}
@@ -57,8 +63,14 @@
 				':notification'=>1
 			]);
 			sendMail(['type'=>"token","value"=> $token], "verification", $_POST['email']);
-			alert("a verification email was sent to ". htmlspecialchars($_POST['email']));
+			$alert = "<script>alert('a verification email was sent to ".htmlspecialchars($_POST['email'])."')</script>";
 		}
 		else if (!$user['is_verified']) sendMail(['type'=>"token","value"=> $token], "verification", $_POST["email"]);
-		else alert("user already exists");
+		else $alert = "<script>alert('user already exists');</script>";
+	}
+
+	include "sign_up.html";
+
+	if (isset($alert)) {
+		echo $alert;
 	}

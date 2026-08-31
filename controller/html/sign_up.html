@@ -265,7 +265,7 @@
 			<h2>Create an account</h2>
 			<div class="error-msg" id="errorMsg">Invalid username or password</div>
 
-			<form action="" method="post">
+			<form action="/sign_up.php" method="post">
 				<input type="hidden" name="csrf-token" value="<?= $_SESSION['csrf-token'] ?>">
 				<input type="text" name="username" placeholder="Username" required><br>
 				<input type="password" name="password" placeholder="Password" 
