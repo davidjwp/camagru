@@ -3,10 +3,6 @@
 	session_start();
 	session_regenerate_id(true);
 	
-	if (empty($_POST['csrf-token'])) {
-		$_SESSION['csrf-token'] = bin2hex(random_bytes(32));
-	}
-		
 	if (!isset($_SESSION['user'])) {
 		header('location: /index.php');
 		exit;
@@ -25,64 +21,66 @@
 		exit;
 	}
 
+	$data = json_decode(file_get_contents('php://input'), true);
+
 	$doc = new DOMDocument();
 	$doc->loadHTMLFile('profile.html');
 
-	if (empty($_POST['csrf-token'])) {
+	if (!isset($data['csrf_token'])) {
 		$_SESSION['csrf-token'] = bin2hex(random_bytes(32));
-
-		$doc->getElementById('csrf-token1')->setAttribute('value', $_SESSION['csrf-token']);
-		$doc->getElementById('csrf-token2')->setAttribute('value', $_SESSION['csrf-token']);
 	}
+	
+	$doc->getElementById('csrf-token1')->setAttribute('value', $_SESSION['csrf-token']);
+	$doc->getElementById('csrf-token2')->setAttribute('value', $_SESSION['csrf-token']);
 
 	$user = $_SESSION["user"];
-
+	
 	/*check username or email then change them*/
 	$change = ['',''];
-	if (!empty($_POST["username"])) {
-		if (strlen($_POST['username']) < 5 || strlen($_POST['username']) > 20) exit(
-				"<script>alert('username must be between 5 and 20 chars');
-				window.location.href='/profile.php';</script>"
-			);
+	if (!empty($data["username"])) {
+		if (strlen($data['username']) < 5 || strlen($data['username']) > 20) 
+			exit (json_encode(['success'=> false, 'message'=>'username must be between 5 and 20 characters long']));
 		$change[0] = 'username';
 	}
-	if (!empty($_POST["email"])) {
-		if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) exit(
-			"<script>alert('Error: "."Invalid email address"."');
-			window.location.href='/profile.php';</script>"
-			);
+	if (!empty($data["email"])) {
+		if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) 
+			exit (json_encode(['success'=> false, 'message'=>'invalid email address']));
 		$change[1] = 'email';
 	}
 
-	if (isset($_POST['csrf-token']) && $_POST['csrf-token'] === $_SESSION['csrf-token']) {
-		error_log('DEBUG HERE ');
+	if (isset($data['csrf_token']) && $data['csrf_token'] === $_SESSION['csrf-token']) {
 		foreach ($change as $ch) {
 			if (!empty($ch)) {
 				$stmt = $pdo->prepare("UPDATE users SET $ch = :$ch WHERE id = :id");
-				$stmt->execute([":$ch"=> $_POST[$ch], ':id'=>$user['id']]);
-				$_SESSION['user'][$ch] = $_POST[$ch];
-			}	
-		}
+				$stmt->execute([":$ch"=> $data[$ch], ':id'=>$user['id']]);
+				$_SESSION['user'][$ch] = $data[$ch];
+				}
+			}
+		
+		if (!empty($change[0]) || !empty($change[1]))
+			exit (json_encode(['success'=>true, 'message'=>'update successful']));
 	}
-	
-	if (!empty($_POST["password1"]) && !empty($_POST["password2"])) {
-		if (strlen($_POST['password1']) < 5 || strlen($_POST['password1']) > 20 ||
-		!preg_match('/[!@#$%^&*(){}\-_=+?\/.>,<;:]/', $_POST['password1']) ||
-		!preg_match('/[A-Z]/', $_POST['password1']))
-		alert("password must contain at least one special char and one upper case");
-		else if ($_POST['password1'] !== $_POST['password2']) {
-			$alert = "<script>alert('password don't match');</script>";
+
+	if (!empty($data["password1"]) && !empty($data["password2"])) {
+		if (strlen($data['password1']) < 5 || strlen($data['password1']) > 20 ||
+		!preg_match('/[!@#$%^&*(){}\-_=+?\/.>,<;:]/', $data['password1']) ||
+		!preg_match('/[A-Z]/', $data['password1'])) {
+			echo json_encode(['success'=> false, 'message'=>'password needs to be at least 5 and max 20 characters long and contain at least one uppercase and special character']);
+			exit ;
+		}
+		else if ($data['password1'] !== $data['password2']) {
+			echo json_encode(['success'=>false, 'message'=> 'passwords dont match']);
+			exit ;
 		}
 		else {
 			$stmt = $pdo->prepare("UPDATE users SET password = :password WHERE id = :id");
 			$stmt->execute([
-				':password' => password_hash($_POST['password1'], PASSWORD_DEFAULT), 
+				':password' => password_hash($data['password1'], PASSWORD_DEFAULT), 
 				':id' => $user['id']
 				]);
+			exit (json_encode(['success'=>true, 'message'=>'update successful']));
 		}
 	}
-
-
 	
 	//fetch notification status and add input element
 	$doc->getElementById('welcome_header')->nodeValue = "Welcome ". $user['username'];
@@ -107,17 +105,11 @@
 	$target->appendChild($span);
 
 	//get json from toggle POST fetch and update notification accordingly
-	$data = json_decode(file_get_contents('php://input'), true);
 	if (isset($data['checked'])) {
 		$notification = $data['notification'] ? 1 : 0;
 		$stmt = $pdo->prepare("UPDATE users SET notification = :notification WHERE id = :id");
 		$stmt->execute([":notification"=>$notification, ":id"=>$user['id']]);
-		echo json_encode(['success'=>true]);
-		exit ;
+		exit (json_encode(['success'=>true, 'message'=>'notification updated']));
 	}
 
 	echo $doc->saveHTML();
-	if (isset($alert)) {
-		echo $alert;
-	}
-	exit;

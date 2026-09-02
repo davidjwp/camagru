@@ -19,56 +19,57 @@
 
             .header {
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                padding: 14px 30px;
+                padding: 16px 30px;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
                 flex-shrink: 0;
                 box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-                flex-wrap: wrap;
-                gap: 8px;
             }
 
             .header-left {
                 display: flex;
                 align-items: center;
-                gap: 14px;
+                gap: 12px;
             }
 
             .header-left h1 {
                 color: white;
-                font-size: 22px;
+                font-size: 24px;
                 font-weight: 700;
-                letter-spacing: -0.3px;
+                letter-spacing: -0.5px;
             }
 
-            .header-left .tagline {
-                color: rgba(255,255,255,0.6);
-                font-size: 12px;
+            .header-left {
+                color: rgba(255,255,255,0.7);
+                font-size: 13px;
                 font-weight: 300;
             }
 
             .header-right {
                 display: flex;
                 align-items: center;
-                gap: 8px;
-                flex-wrap: wrap;
+                gap: 10px;
             }
 
-            .btn-header {
-                padding: 7px 16px;
+            .btn {
+                padding: 8px 18px;
                 border: none;
                 border-radius: 6px;
-                font-size: 12px;
+                font-size: 13px;
                 font-weight: 600;
                 cursor: pointer;
                 transition: all 0.25s ease;
                 text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
             }
 
             .btn-profile {
                 background: rgba(255,255,255,0.15);
                 color: white;
+                backdrop-filter: blur(4px);
                 border: 1px solid rgba(255,255,255,0.1);
             }
 
@@ -78,29 +79,28 @@
             }
 
             .btn-home {
-                background: rgba(255,255,255,0.10);
-                color: rgba(255,255,255,0.8);
-                border: 1px solid rgba(255,255,255,0.06);
+                background: rgba(255,255,255,0.12);
+                color: white;
+                border: 1px solid rgba(255,255,255,0.15);
             }
 
             .btn-home:hover {
-                background: rgba(255,255,255,0.20);
-                color: white;
+                background: rgba(255,255,255,0.22);
                 transform: translateY(-1px);
             }
 
             .btn-disconnect {
                 background: transparent;
-                color: rgba(255,255,255,0.4);
-                font-size: 11px;
-                padding: 5px 12px;
-                border: 1px solid rgba(255,255,255,0.06);
+                color: rgba(255,255,255,0.5);
+                font-size: 12px;
+                padding: 6px 14px;
+                border: 1px solid rgba(255,255,255,0.08);
             }
 
             .btn-disconnect:hover {
-                color: rgba(255,255,255,0.8);
+                color: rgba(255,255,255,0.85);
                 background: rgba(255,255,255,0.06);
-                border-color: rgba(255,255,255,0.12);
+                border-color: rgba(255,255,255,0.15);
             }
 
             /* Main content, body */
@@ -403,10 +403,10 @@
             <span class="tagline">create</span>
         </div>
         <div class="header-right">
-            <button class="btn-header btn-home" onclick="window.location.href='../home.php'">Home</button>
-            <button class="btn-header btn-profile" onclick="window.location.href='profile.php'">Profile</button>
+            <button class="btn btn-home" onclick="window.location.href='../home.php'">Home</button>
+            <button class="btn btn-profile" onclick="window.location.href='profile.php'">Profile</button>
             <form action="" method="post" style="display:inline;">
-                <button class="btn-header btn-disconnect" name="disconnect" value="disconnect">sign out</button>
+                <button class="btn btn-disconnect" name="disconnect" value="disconnect">sign out</button>
             </form>
         </div>
     </div>

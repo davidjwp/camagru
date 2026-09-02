@@ -12,6 +12,7 @@
 		"camagru_admin_pass"
 	);
 
+	//check username, password and csrf token then search user
 	if (isset($_POST["username"]) && isset($_POST["password"]) && 
 	$_POST['csrf-token'] == $_SESSION['csrf-token']) {
 		$stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username");
@@ -27,4 +28,5 @@
 			exit;
 		}
 	}
+
 	include 'sign_in.html';	

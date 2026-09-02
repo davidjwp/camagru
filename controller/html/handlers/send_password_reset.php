@@ -1,16 +1,12 @@
 <?php
 	require '../functs.php';
 	session_start();
-	$alert;
 
-	if (empty($_POST['csrf-token'])) {
+	$data = json_decode(file_get_contents('php://input'), true);
+
+	if (!isset($data['csrf_token'])) {
 		$_SESSION['csrf-token'] = bin2hex(random_bytes(32));
 	}
-
-		if (isset($_POST['csrf-token']))
-		error_log('csrf token post password reset'.$_POST['csrf-token']);
-	else
-		error_log('NO POST TOKEN');
 
 	$pdo = new PDO(
 		'mysql:host=model;dbname=camagru;charset=utf8',
@@ -18,16 +14,17 @@
 		'camagru_admin_pass'
 	);
 
-	if (isset($_POST['username']) && isset($_POST['email']) && 
-	isset($_POST['csrf-token']) && $_POST['csrf-token'] === $_SESSION['csrf-token']) {
-		if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
-			$alert = "<script>alert('invalid email address');</script>";
-		}
+	if (isset($data['username']) && isset($data['email']) && 
+	isset($data['csrf_token']) && $data['csrf_token'] === $_SESSION['csrf-token']) {
+		
+		if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) 
+			exit (json_encode(['success'=>false, 'message'=>'invalid email address']));
 		else {
 			$stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email AND is_verified = 1 AND username = :username");
-			$stmt->execute([':email' => $_POST['email'], ':username'=> $_POST['username']]);
+			$stmt->execute([':email' => $data['email'], ':username'=> $data['username']]);
 			$user = $stmt->fetch();
-			if (!$user) $alert = "<script>alert('user not found');</script>";
+
+			if (!$user) exit (json_encode(['success'=>false, 'message'=>'user not found']));
 			else {
 				$token = random_bytes(32);
 		
@@ -36,13 +33,15 @@
 					':token' => bin2hex($token),
 					':id' => $user['id']
 				]);
-				sendMail(['type'=>"token","value"=> $token], "password_reset", $_POST["email"]);
-				$alert = "<script>alert('mail sent to ".htmlspecialchars($_POST['email'])."')</script>";
+				sendMail(['type'=>"token","value"=> $token], "password_reset", $data["email"]);
+				exit (json_encode(['success'=>true, 'message'=>'mail sent to '.htmlspecialchars($data['email'])]));
 			}
 		}
 	}
-	include '../send_password_reset.html';
-
-	if (isset($alert)) {
-		echo $alert;
+	
+	if (isset($data['form1'])) {
+		header('Content-Type: application/json');
+		exit ;
 	}
+
+	include '../send_password_reset.html';

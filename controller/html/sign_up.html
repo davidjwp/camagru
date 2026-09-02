@@ -151,12 +151,33 @@
 			border-radius: 6px;
 			display: none;
 		}
+		.status-msg {
+			padding: 10px 14px;
+			border-radius: 8px;
+			font-size: 13px;
+			margin-top: 12px;
+			display: none;
+		}
 
-        @media screen and (max-device-width: 700px) {
-            html {
-                font-size: 25px;
+		.status-msg.success {
+			display: block;
+			background: #e6f7e6;
+			color: #2d7a2d;
+			border: 1px solid #b8e6b8;
+		}
+
+		.status-msg.error {
+			display: block;
+			background: #fde8e8;
+			color: #c0392b;
+			border: 1px solid #f5c6c6;
+		}
+		
+		@media screen and (max-device-width: 700px), screen and (min-device-width: 3000px) {
+			html {
+				font-size: 25px;
             }
-
+			
             body {
                 padding: 12px;
                 align-items: center;
@@ -164,7 +185,6 @@
 
             .signup-container {
                 padding: 2rem 1.5rem;
-                max-width: 100%;
                 border-radius: 14px;
                 box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             }
@@ -205,59 +225,18 @@
                 padding: 0.6rem;
             }
         }
-		        @media screen and (min-device-width: 3000px) {
-            html {
-                font-size: 25px;
-            }
 
-            body {
-                padding: 12px;
-                align-items: center;
-            }
+		@media screen and (max-device-width: 700px) {
+			.signup-container {
+				max-width: 100%;
+			}
+		}
 
-            .signup-container {
-                padding: 2rem 1.5rem;
-                max-width: 50%;
-                border-radius: 14px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            }
-
-            .signup-container:hover {
-                transform: none;
-            }
-
-            h2 {
-                font-size: 1.6rem;
-                margin-bottom: 1.2rem;
-            }
-
-            input[type="text"],
-            input[type="password"] {
-                padding: 1rem 1.2rem;
-                font-size: 1.1rem;
-                margin: 0.6rem 0;
-                border-width: 2px;
-            }
-
-            input[type="submit"] {
-                padding: 1rem;
-                font-size: 1.1rem;
-                border-radius: 10px;
-            }
-
-            .links a {
-                font-size: 1rem;
-            }
-
-            .divider span {
-                font-size: 0.95rem;
-            }
-
-            .error-msg {
-                font-size: 1rem;
-                padding: 0.6rem;
-            }
-        }
+		@media screen and (min-device-width: 3000px) {
+			.signup-container {
+				max-width: 50%;
+			}
+		}
 	</style>
 </head>
 	<body>
@@ -265,13 +244,11 @@
 			<h2>Create an account</h2>
 			<div class="error-msg" id="errorMsg">Invalid username or password</div>
 
-			<form action="/sign_up.php" method="post">
+			<form action="/sign_up.php" method="post" id="signUp">
 				<input type="hidden" name="csrf-token" value="<?= $_SESSION['csrf-token'] ?>">
 				<input type="text" name="username" placeholder="Username" required><br>
 				<input type="password" name="password" placeholder="Password" 
-				required minlength="5" maxlength="20">
-				<br>
-
+				required minlength="5" maxlength="20"><br>
 				<input type="text" name="email" placeholder="Email" required>
 				<br><br>
 
@@ -281,6 +258,45 @@
 			<div class='links'>
 				<a href="../index.php">back</a>
 			</div>
+			<div class="status-msg" id="statusMsg"></div>
 		</div>
+		<script>
+			const form1 = document.getElementById('signUp');
+			
+			form1.addEventListener('submit', (event) => {
+				event.preventDefault();
+				const csrfToken = event.target[0].value;
+				const username = event.target[1].value;
+				const password = event.target[2].value;
+				const email = event.target[3].value;
+
+				fetch('/sign_up.php', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						form: true,
+						csrf_token: csrfToken,
+						username: username,
+						password: password,
+						email: email
+					})
+				})
+				.then(res => res.json())
+				.then(data => {
+					if (data.success) showStatus(data.message, 'success');
+					else showStatus(data.message, 'error');
+				})
+			});
+
+			function showStatus(message, type) {
+				const el = document.getElementById('statusMsg');
+				el.textContent = message;
+				el.className = 'status-msg ' + type;
+				clearTimeout(el._timeout);
+				el._timeout = setTimeout(() => {
+					el.className = 'status-msg';
+				}, 4000);
+			}
+		</script>
 	</body>
 </html>

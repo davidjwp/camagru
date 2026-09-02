@@ -2,105 +2,105 @@
 <html>
 	<head>
 		<style>
-			* {
-				margin: 0;
-				padding: 0;
-				box-sizing: border-box;
-			}
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
 
-			html, body {
-				font-family: 'Segoe UI', Arial, sans-serif;
-				min-height: 100vh;
-				display: flex;
-				flex-direction: column;
-				background: #f0f2f5;
-			}
+            html, body {
+                font-family: 'Segoe UI', Arial, sans-serif;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                background: #f0f2f5;
+            }
 
-			.header {
-				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-				padding: 14px 30px;
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-				flex-shrink: 0;
-				box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-				flex-wrap: wrap;
-				gap: 8px;
-			}
+            .header {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                padding: 16px 30px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-shrink: 0;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            }
 
-			.header-left {
-				display: flex;
-				align-items: center;
-				gap: 14px;
-			}
+            .header-left {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
 
-			.header-left h1 {
-				color: white;
-				font-size: 22px;
-				font-weight: 700;
-				letter-spacing: -0.3px;
-			}
+            .header-left h1 {
+                color: white;
+                font-size: 24px;
+                font-weight: 700;
+                letter-spacing: -0.5px;
+            }
 
-			.header-left .tagline {
-				color: rgba(255,255,255,0.6);
-				font-size: 12px;
-				font-weight: 300;
-			}
+            .header-left {
+                color: rgba(255,255,255,0.7);
+                font-size: 13px;
+                font-weight: 300;
+            }
 
-			.header-right {
-				display: flex;
-				align-items: center;
-				gap: 8px;
-				flex-wrap: wrap;
-			}
+            .header-right {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
 
-			.btn-header {
-				padding: 7px 16px;
-				border: none;
-				border-radius: 6px;
-				font-size: 12px;
-				font-weight: 600;
-				cursor: pointer;
-				transition: all 0.25s ease;
-				text-decoration: none;
-			}
+            .btn {
+                padding: 8px 18px;
+                border: none;
+                border-radius: 6px;
+                font-size: 13px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.25s ease;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+            }
 
-			.btn-home {
-				background: rgba(255,255,255,0.10);
-				color: rgba(255,255,255,0.8);
-				border: 1px solid rgba(255,255,255,0.06);
-			}
+            .btn-edit {
+                background: rgba(255,255,255,0.15);
+                color: white;
+                backdrop-filter: blur(4px);
+                border: 1px solid rgba(255,255,255,0.1);
+            }
 
-			.btn-home:hover {
-				background: rgba(255,255,255,0.20);
-				color: white;
-				transform: translateY(-1px);
-			}
+            .btn-edit:hover {
+                background: rgba(255,255,255,0.25);
+                transform: translateY(-1px);
+            }
 
-			.btn-edit {
-				background: rgba(255,255,255,0.15);
-				color: white;
-				border: 1px solid rgba(255,255,255,0.1);
-			}
+            .btn-home {
+                background: rgba(255,255,255,0.12);
+                color: white;
+                border: 1px solid rgba(255,255,255,0.15);
+            }
 
-			.btn-edit:hover {
-				background: rgba(255,255,255,0.25);
-				transform: translateY(-1px);
-			}
+            .btn-home:hover {
+                background: rgba(255,255,255,0.22);
+                transform: translateY(-1px);
+            }
 
-			.btn-disconnect {
-				background: transparent;
-				color: rgba(255,255,255,0.4);
-				font-size: 11px;
-				padding: 5px 12px;
-				border: 1px solid rgba(255,255,255,0.06);
-			}
+            .btn-disconnect {
+                background: transparent;
+                color: rgba(255,255,255,0.5);
+                font-size: 12px;
+                padding: 6px 14px;
+                border: 1px solid rgba(255,255,255,0.08);
+            }
 
-			.btn-disconnect:hover {
-				color: rgba(255,255,255,0.8);
-				background: rgba(255,255,255,0.06);
-				border-color: rgba(255,255,255,0.12);
-			}
+            .btn-disconnect:hover {
+                color: rgba(255,255,255,0.85);
+                background: rgba(255,255,255,0.06);
+                border-color: rgba(255,255,255,0.15);
+            }
 
 			.main-content {
 				flex: 1;
@@ -344,7 +344,7 @@
 				letter-spacing: 0.3px;
 			}
 
-			@media (max-width: 600px) {
+			/* @media (max-width: 600px) {
 				.header {
 					padding: 10px 14px;
 				}
@@ -367,7 +367,65 @@
 					font-size: 11px;
 					padding: 5px 12px;
 				}
-			}
+			} */
+@media screen and (max-device-width: 700px) {
+    html {
+        font-size: 25px;
+    }
+
+    body {
+        padding: 12px;
+        align-items: center;
+    }
+
+    .profile-card {
+        padding: 2rem 1.5rem;
+        max-width: 100%;
+        border-radius: 14px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+
+    .profile-card:hover {
+        transform: none;
+    }
+
+    h2 {
+        font-size: 1.6rem;
+        margin-bottom: 1.2rem;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+        padding: 1rem 1.2rem;
+        font-size: 1.1rem;
+        margin: 0.6rem 0;
+        border-width: 2px;
+    }
+
+    input[type="submit"],
+    .btn-primary,
+    .btn-secondary,
+    .btn-danger {
+        padding: 1rem;
+        font-size: 1.1rem;
+        border-radius: 10px;
+    }
+
+    .links a {
+        font-size: 1rem;
+    }
+
+    .divider span {
+        font-size: 0.95rem;
+    }
+
+    .error-msg {
+        font-size: 1rem;
+        padding: 0.6rem;
+    }
+}
+
 		</style>
 	</head>
 	<body>
@@ -378,10 +436,10 @@
 				<span class="tagline">profile</span>
 			</div>
 			<div class="header-right">
-				<button class="btn-header btn-home" onclick="window.location.href='/home.php'">Home</button>
-				<button class="btn-header btn-edit" onclick="window.location.href='editor.php'">Edit</button>
+				<button class="btn btn-home" onclick="window.location.href='/home.php'">Home</button>
+				<button class="btn btn-edit" onclick="window.location.href='editor.php'">Edit</button>
 				<form action="" method="post" style="display:inline;">
-					<button class="btn-header btn-disconnect" name="disconnect" value="disconnect">sign out</button>
+					<button class="btn btn-disconnect" name="disconnect" value="disconnect">sign out</button>
 				</form>
 			</div>
 		</div>
@@ -435,7 +493,9 @@
 
 		<script>
 			const toggle = document.getElementById('notif-toggle');
-
+			const form1 = document.getElementById('emuser');
+			const form2 = document.getElementById('profileForm');
+			
 			toggle.addEventListener('change', function() {
 				fetch('/profile.php', {
 					method: 'POST',
@@ -447,14 +507,59 @@
 				})
 				.then(res => res.json())
 				.then(data => {
-					console.log(data);
 					if (data.success) {
 						showStatus('Notification settings updated', 'success');
 					}
 				})
 				.catch(() => showStatus('Failed to update settings', 'error'));
 			});
+			
+			form1.addEventListener('submit', (event) => {
+				event.preventDefault();
+				const csrfToken = event.target[0].value;
+				const username = event.target[1].value;
+				const email = event.target[2].value;
 
+				fetch('/profile.php', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						form1:true,
+						csrf_token: csrfToken,
+						username: username,
+						email: email
+					})
+				})
+				.then(res => res.json())
+				.then(data => {
+					if (data.success) showStatus(data.message, 'success');
+					else showStatus(data.message, 'error');
+				})
+			});
+
+			form2.addEventListener('submit', function() {
+				event.preventDefault();
+				const csrfToken = event.target[0].value;
+				const password1 = event.target[1].value;
+				const password2 = event.target[2].value;
+				
+				fetch('/profile.php', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						form2:true,
+						csrf_token: csrfToken,
+						password1: password1,
+						password2: password2
+					})
+				})
+				.then(res => res.json())
+				.then(data => {
+					if (data.success) showStatus(data.message, 'success');
+					else showStatus(data.message, 'error');
+				})
+			});
+			
 			function showStatus(message, type) {
 				const el = document.getElementById('statusMsg');
 				el.textContent = message;
