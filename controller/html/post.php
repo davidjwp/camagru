@@ -44,8 +44,7 @@
 		$stmt = $pdo->prepare("DELETE FROM posts WHERE id = :post_id");
 		$stmt->execute([':post_id'=>$post_id]);
 
-		echo json_encode(['success'=>true]);
-		exit ;
+		exit (json_encode(['success'=>true]));
 	}
 
 	$post_query = "SELECT posts.*, users.username, users.email, COUNT(DISTINCT likes.user_id) as like_count FROM posts 
@@ -57,8 +56,6 @@
 	LEFT JOIN users ON comments.user_id = users.id
 	WHERE comments.post_id = :post_id
 	ORDER BY comments.created_at ASC";
-
-	$like_query = "SELECT * FROM likes WHERE :post_id = post_id AND :user_id = user_id";
 
 	$stmt = $pdo->prepare($post_query);
 	$stmt->execute([':id'=>$post_id]);
@@ -97,7 +94,7 @@
 		exit;
 	}
 
-	$stmt = $pdo->prepare($like_query);
+	$stmt = $pdo->prepare("SELECT * FROM likes WHERE :post_id = post_id AND :user_id = user_id");
 	$stmt->execute([':post_id'=>$post_id, ':user_id'=>$_SESSION['user']['id']]);
 	$liked = $stmt->fetch() ? 1: 0;
 

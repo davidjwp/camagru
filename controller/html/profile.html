@@ -344,88 +344,156 @@
 				letter-spacing: 0.3px;
 			}
 
-			/* @media (max-width: 600px) {
+			@media screen and (max-device-width: 700px), screen and (min-device-width: 3000px) {
+				html {
+					font-size: 25px;
+				}
+
+				/* ===== BODY ===== */
+				body {
+					padding: 0;
+					align-items: flex-start;
+					min-height: 100vh;
+				}
+
+				/* ===== HEADER ===== */
 				.header {
-					padding: 10px 14px;
+					padding: 16px 20px;
+					width: 100%;
+					border-radius: 0;
 				}
+
 				.header-left h1 {
-					font-size: 18px;
+					font-size: 2.2rem;
 				}
+
 				.header-left .tagline {
-					display: none;
+					font-size: 1.2rem;
 				}
+
+				.btn {
+					font-size: 1.3rem;
+					padding: 12px 24px;
+				}
+
+				.btn-disconnect {
+					font-size: 1.1rem;
+					padding: 10px 18px;
+				}
+
+				/* ===== MAIN CONTENT ===== */
 				.main-content {
-					padding: 16px 12px;
+					padding: 20px 16px;
+					max-width: 100%;
 				}
+
 				.profile-card {
-					padding: 20px 18px;
+					padding: 2rem 1.5rem;
+					max-width: 100%;
+					border-radius: 14px;
+					box-shadow: 0 10px 30px rgba(0,0,0,0.15);
 				}
+
+				.profile-card:hover {
+					transform: none;
+				}
+
+				.profile-card .avatar {
+					width: 100px;
+					height: 100px;
+					font-size: 44px;
+				}
+
 				.profile-card h2 {
-					font-size: 18px;
+					font-size: 2rem;
+					margin-bottom: 0.8rem;
 				}
-				.btn-header {
-					font-size: 11px;
-					padding: 5px 12px;
+
+				.profile-card .email-display {
+					font-size: 1.2rem;
+					margin-bottom: 1.5rem;
 				}
-			} */
-@media screen and (max-device-width: 700px) {
-    html {
-        font-size: 25px;
-    }
 
-    body {
-        padding: 12px;
-        align-items: center;
-    }
+				.section-label {
+					font-size: 1.2rem;
+					margin-bottom: 1rem;
+				}
 
-    .profile-card {
-        padding: 2rem 1.5rem;
-        max-width: 100%;
-        border-radius: 14px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    }
+				/* ===== TOGGLE ===== */
+				.toggle-row label {
+					font-size: 1.3rem;
+				}
 
-    .profile-card:hover {
-        transform: none;
-    }
+				.toggle-row .switch {
+					width: 60px;
+					height: 32px;
+				}
 
-    h2 {
-        font-size: 1.6rem;
-        margin-bottom: 1.2rem;
-    }
+				.toggle-row .switch .slider::before {
+					height: 24px;
+					width: 24px;
+					left: 4px;
+					bottom: 4px;
+				}
 
-    input[type="text"],
-    input[type="email"],
-    input[type="password"] {
-        padding: 1rem 1.2rem;
-        font-size: 1.1rem;
-        margin: 0.6rem 0;
-        border-width: 2px;
-    }
+				.toggle-row .switch input:checked + .slider::before {
+					transform: translateX(28px);
+				}
 
-    input[type="submit"],
-    .btn-primary,
-    .btn-secondary,
-    .btn-danger {
-        padding: 1rem;
-        font-size: 1.1rem;
-        border-radius: 10px;
-    }
+				/* ===== INPUTS & PLACEHOLDERS ===== */
+				.profile-form input[type="text"],
+				.profile-form input[type="email"],
+				.profile-form input[type="password"] {
+					padding: 1rem 1.2rem;
+					font-size: 1.5rem;
+					margin: 0.6rem 0;
+					border-width: 2px;
+					height: auto;
+					min-height: 60px;
+				}
 
-    .links a {
-        font-size: 1rem;
-    }
+				input[type="text"]::placeholder,
+				input[type="email"]::placeholder,
+				input[type="password"]::placeholder {
+					font-size: 1.5rem;
+					color: #a0aec0;
+				}
+				input[type="submit"],
+				.btn-primary,
+				.btn-secondary,
+				.btn-danger {
+					padding: 1rem 1.5rem;
+					font-size: 1.3rem;
+					border-radius: 10px;
+				}
 
-    .divider span {
-        font-size: 0.95rem;
-    }
+				.links a {
+					font-size: 1.2rem;
+				}
 
-    .error-msg {
-        font-size: 1rem;
-        padding: 0.6rem;
-    }
-}
+				.divider span {
+					font-size: 1.1rem;
+				}
 
+				.error-msg,
+				.status-msg {
+					font-size: 1.2rem;
+					padding: 0.8rem;
+				}
+
+				/* ===== FOOTER ===== */
+				.footer {
+					padding: 16px 20px;
+					width: 100%;
+					margin-top: auto;
+					border-radius: 0;
+				}
+
+				.footer p {
+					font-size: 1rem;
+					padding: 4px 0;
+				}
+			}
 		</style>
 	</head>
 	<body>
@@ -532,7 +600,11 @@
 				})
 				.then(res => res.json())
 				.then(data => {
-					if (data.success) showStatus(data.message, 'success');
+					if (data.success) {
+						//update new sessID and disable cross-site cookie
+						if (data.nsi) document.cookie = 'PHPSESSID=' + data.nsi + '; path=/;SameSite=Strict;';
+						showStatus(data.message, 'success');
+					}
 					else showStatus(data.message, 'error');
 				})
 			});
@@ -555,7 +627,10 @@
 				})
 				.then(res => res.json())
 				.then(data => {
-					if (data.success) showStatus(data.message, 'success');
+					if (data.success) {
+						if (data.nsi) document.cookie = 'PHPSESSID=' + data.nsi + '; path=/;SameSite=Strict;';
+						showStatus(data.message, 'success');
+					}
 					else showStatus(data.message, 'error');
 				})
 			});

@@ -339,47 +339,236 @@
             letter-spacing: 0.3px;
         }
 
-        @media (max-width: 600px) {
+        @media screen and (max-device-width: 700px) {
+            html {
+                font-size: 25px;
+            }
+
+            /* ===== HEADER ===== */
             .header {
-                padding: 10px 14px;
-            }
-            .header-left h1 {
-                font-size: 18px;
-            }
-            .header-left .tagline {
-                display: none;
-            }
-            .btn-header {
-                font-size: 11px;
-                padding: 5px 12px;
-            }
-            .post_content {
-                padding: 0 12px;
-                margin: 16px auto;
-            }
-            .post-card .post-actions {
-                padding: 10px 14px;
-                flex-wrap: wrap;
-            }
-            .post-card .post-meta {
-                padding: 10px 14px;
-                flex-wrap: wrap;
-            }
-            .comment-section {
-                padding: 14px;
-            }
-            .comment-section .comment-form {
-                flex-wrap: wrap;
-            }
-            .comment-section .comment-form .comment-submit {
+                padding: 16px 20px;
                 width: 100%;
+                border-radius: 0;
             }
-            .comment-section .comments .comment {
-                padding: 10px 14px;
+
+            .header-left h1 {
+                font-size: 2.2rem;
             }
-        }
-    </style>
-</head>
+
+            .header-left .tagline {
+                font-size: 1.2rem;
+            }
+
+            .btn-home,
+            .btn-profile {
+                font-size: 1.3rem;
+                padding: 12px 24px;
+            }
+
+            .btn-disconnect {
+                font-size: 1.1rem;
+                padding: 10px 18px;
+            }
+
+            .post_content {
+                    padding: 0 16px;
+                    margin: 20px auto;
+                    max-width: 100%;
+                    display: flex;
+                    flex-direction: column;
+                }
+
+                .post-card {
+                    border-radius: 14px;
+                    margin-bottom: 20px;
+                    width: 100%;
+                    order: 1;
+                }
+
+                .comment-section {
+                    padding: 20px 16px;
+                    border-radius: 14px;
+                    width: 100%;
+                    order: 2;
+                }
+
+                .post-card .post-meta {
+                    padding: 14px 18px;
+                    gap: 12px;
+                }
+
+                .post-card .post-meta .avatar {
+                    width: 44px;
+                    height: 44px;
+                    font-size: 16px;
+                }
+
+                .post-card .post-meta .username {
+                    font-size: 1.2rem;
+                }
+
+                .post-card .post-meta .post-time {
+                    font-size: 0.95rem;
+                }
+
+                /* Post Image */
+                .post-card .post-image {
+                    width: 100%;
+                    height: auto;
+                    display: block;
+                }
+
+                /* Post Actions */
+                .post-card .post-actions {
+                    padding: 14px 18px;
+                    gap: 16px;
+                    flex-wrap: wrap;
+                }
+
+                .post-card .post-actions .like-btn {
+                    font-size: 1.1rem;
+                    gap: 8px;
+                }
+
+                .post-card .post-actions .like-btn .heart {
+                    width: 34px;
+                    height: 34px;
+                }
+
+                .post-card .post-actions .like-count {
+                    font-size: 1.1rem;
+                    min-width: 70px;
+                }
+
+                .post-card .post-actions .delete-btn {
+                    font-size: 1rem;
+                    padding: 6px 14px;
+                }
+
+                /* Comment Section */
+                .comment-section .comment-form {
+                    gap: 12px;
+                    margin-bottom: 20px;
+                    display: flex;
+                    flex-direction: column; /* ← Stack input and button on mobile */
+                }
+
+                .comment-section .comment-form .comment-input {
+                    padding: 14px 16px;
+                    font-size: 1.2rem;
+                    border-width: 2px;
+                    min-height: 56px;
+                    width: 100%;
+                }
+
+                .comment-section .comment-form .comment-input::placeholder {
+                    font-size: 1.1rem;
+                    color: #a0aec0;
+                }
+
+                .comment-section .comment-form .comment-submit {
+                    padding: 14px 24px;
+                    font-size: 1.2rem;
+                    border-radius: 10px;
+                    width: 100%;
+                }
+
+                .comment-section .comments {
+                    gap: 12px;
+                    display: flex;
+                    flex-direction: column;
+                }
+
+                .comment-section .comments .comment {
+                    padding: 14px 16px;
+                    border-radius: 10px;
+                    border-left-width: 4px;
+                }
+
+                .comment-section .comments .comment .com_info {
+                    gap: 12px;
+                    margin-bottom: 6px;
+                    display: flex;
+                    align-items: center;
+                    flex-wrap: wrap;
+                }
+
+                .comment-section .comments .comment .com_info .com_user {
+                    font-size: 1.1rem;
+                }
+
+                .comment-section .comments .comment .com_info .com_time {
+                    font-size: 0.95rem;
+                }
+
+                .comment-section .comments .comment .com_cont {
+                    font-size: 1.1rem;
+                    line-height: 1.6;
+                }
+
+                .comment-section .no-comments {
+                    font-size: 1.1rem;
+                    padding: 30px 0;
+                }
+
+                /* ===== FOOTER ===== */
+                .footer {
+                    padding: 16px 20px;
+                    width: 100%;
+                    margin-top: auto;
+                    border-radius: 0;
+                }
+
+                .footer p {
+                    font-size: 1rem;
+                    padding: 4px 0;
+                }
+            }
+
+            @media screen and (min-device-width: 3000px) {
+                html {
+                    font-size: 25px;
+                }
+
+                /* ===== HEADER ===== */
+                .header {
+                    padding: 16px 20px;
+                    width: 100%;
+                    border-radius: 0;
+                }
+
+                .header-left h1 {
+                    font-size: 2.2rem;
+                }
+
+                .header-left .tagline {
+                    font-size: 1.2rem;
+                }
+
+                .btn-home,
+                .btn-profile {
+                    font-size: 1.3rem;
+                    padding: 12px 24px;
+                }
+
+                .btn-disconnect {
+                    font-size: 1.1rem;
+                    padding: 10px 18px;
+                }
+                .footer {
+                    padding: 16px 20px;
+                    width: 100%;
+                    margin-top: auto;
+                    border-radius: 0;
+                }
+
+                .footer p {
+                    font-size: 1rem;
+                    padding: 4px 0;
+                }
+            }
+        </style>
+    </head>
 <body>
 
     <div class="header">
@@ -414,7 +603,6 @@
     </div>
 
     <div class="footer">
-        <p>&copy; 2026 Camagru &bull; All rights reserved</p>
     </div>
 
     <script>

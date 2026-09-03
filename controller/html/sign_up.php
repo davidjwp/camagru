@@ -8,6 +8,11 @@
 		$_SESSION['csrf-token'] = bin2hex(random_bytes(32));
 	}
 
+	if (!isset($data['csrf_token']) || $data['csrf_token'] !== $_SESSION['csrf-token']) {
+    	http_response_code(403);
+    	exit(json_encode(['success' => false, 'message' => 'Invalid CSRF token']));
+	}
+
 	if (!empty($data) && isset($data['csrf_token']) && $_SESSION['csrf-token'] === $data['csrf_token']) {
 
 		//if any error in user input send back a json with error message

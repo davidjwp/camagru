@@ -43,14 +43,13 @@ services:
       - "1025:1025"
     networks:
       - camagru_net
+    logging:
+     driver: 'none'
 
 volumes:
   mysql:
     name: mysql
-  # view:
-  #   name: view
-# this is temporary for work, in the final version controller copies the local file 
-# into the container
+
   controller:
     name: controller
 

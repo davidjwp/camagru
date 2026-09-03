@@ -8,6 +8,10 @@
 		$_SESSION['csrf-token'] = bin2hex(random_bytes(32));
 	}
 
+	if (!isset($data['csrf_token']) || $data['csrf_token'] !== $_SESSION['csrf-token']) {
+		http_response_code(403);
+		exit(json_encode(['success' => false, 'message' => 'Invalid CSRF token']));
+	}
 	$pdo = new PDO(
 		'mysql:host=model;dbname=camagru;charset=utf8',
 		'camagru_admin',

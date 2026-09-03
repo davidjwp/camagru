@@ -8,6 +8,11 @@
 		$_SESSION['csrf-token'] = bin2hex(random_bytes(32));
 	}
 
+	if (!isset($data['csrf_token']) || $data['csrf_token'] !== $_SESSION['csrf-token']) {
+		http_response_code(403);
+		exit(json_encode(['success' => false, 'message' => 'Invalid CSRF token']));
+	}
+
 	$pdo = new PDO(
 		'mysql:host=model;dbname=camagru;charset=utf8',
 		'camagru_admin',
@@ -17,6 +22,8 @@
     $token = $_GET['token'] ?? $data['token'] ?? null;
     
 	if (!$token) {
+		if (!empty($data)) exit(json_encode(['redirect'=>true]));
+	
 		header('Location: /index.php');
         exit;
     }
@@ -24,7 +31,7 @@
     $stmt = $pdo->prepare("SELECT * FROM users WHERE verification_token = :token AND is_verified = 1");
     $stmt->execute([':token' => $token]);
     $user = $stmt->fetch();
-    if (!$user) exit(json_encode(['success'=>false, 'message'=>'invalid or expired token']));
+    if (!$user) exit(json_encode(['redirect'=>false,'message'=>'invalid or expired token']));
 
 	if (isset($data['password1']) && isset($data['password2']) &&
 	isset($data['csrf_token']) && $data['csrf_token'] === $_SESSION['csrf-token']) {
@@ -32,18 +39,18 @@
 		if (strlen($data['password1']) < 5 || strlen($data['password1']) > 20 ||
 		!preg_match('/[!@#$%^&*(){}\-_=+?\/.>,<;:]/', $data['password1']) ||
 		!preg_match('/[A-Z]/', $data['password1'])) 
-			exit(json_encode(['success'=> false, 'message'=>'password must contain at least one special char and one upper case']));
+			exit(json_encode(['redirect'=>false, 'message'=>'password must contain at least one special char and one upper case']));
 		else if ($data['password1'] !== $data['password2'])
-			exit(json_encode(['success'=> false, 'message'=>'passwords don\'t match']));
+			exit(json_encode(['redirect'=>false, 'message'=>'passwords don\'t match']));
 
 		$stmt = $pdo->prepare("UPDATE users SET password = :password WHERE id = :id");
 		$stmt->execute([
 			':password' => password_hash($data['password1'], PASSWORD_DEFAULT), 
 			':id' => $user['id']
 		]);
+		session_regenerate_id(true);
 
-		header('location: index.php');
-		exit;
+		exit(json_encode(['redirect'=>true, 'nsi'=>session_id()]));
 	}
 
 	if (isset($data['form1'])) {
