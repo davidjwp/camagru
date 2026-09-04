@@ -7,7 +7,7 @@
 		exit;
 	}
 
-	if (isset($_POST["disconnect"])) {
+	if (isset($data["disconnect"])) {
 		session_destroy();
 		header("location: /index.php");
 		exit;
@@ -17,7 +17,7 @@
 	isset($_GET['id']) ? $_SESSION['post_id'] = $_GET['id']: null;
 
 	isset($_SESSION['post_id']) ?  $post_id = $_SESSION['post_id']: $post_id = null;
-	
+
 	if (!$post_id) {
 		header('location: /home.php');
 		exit;
@@ -25,6 +25,8 @@
 
 	$doc = new DOMDocument;
 	$doc->loadHTMLFile('post.html');
+
+	$doc->getElementById('csrf-token1')->setAttribute('value', $_SESSION['csrf-token']);
 
 	$pdo = new PDO(
 		"mysql:host=model;dbname=camagru;charset=utf8",
@@ -34,11 +36,12 @@
 
 	$data = json_decode(file_get_contents('php://input'), true);
 
-	if (isset($data['delete'])) {
+	if (isset($data['delete']) && isset($data['csrf_token']) && $data['csrf_token'] === $_SESSION['csrf-token'] ) {
 		$stmt = $pdo->prepare("SELECT image_path FROM posts WHERE id = :post_id");
 		$stmt->execute([':post_id'=>$post_id]);
-		$img_path = "/var/www/html/uploads/" . $stmt->fetchColumn();
-		if ($img_path)
+		$filename = $stmt->fetchColumn();
+		$img_path = "/var/www/html/uploads/" . basename($filename);
+		if ($img_path && file_exists($img_path))
 			unlink($img_path);
 
 		$stmt = $pdo->prepare("DELETE FROM posts WHERE id = :post_id");
@@ -70,15 +73,15 @@
 	$comments = $stmt->fetchall();
 	$comment_count = count($comments);
 
-	if (isset($_POST['comment_text']) && !empty($_POST['comment_text'])) {
-		$stmt = $pdo->prepare(
+	if (isset($data['comment_text']) && isset($data['csrf_token']) && $data['csrf_token'] === $_SESSION['csrf-token']) {
+	$stmt = $pdo->prepare(
 			"INSERT INTO comments (post_id, user_id, content) 
 			VALUES (:post_id, :user_id, :content)"
 		);
 		$stmt->execute([
 			":post_id"=>$post_id, 
 			":user_id"=>$_SESSION['user']['id'], 
-			":content"=>$_POST['comment_text']
+			":content"=>htmlspecialchars($data['comment_text'])
 			]);
 			
 		$stmt = $pdo->prepare("SELECT notification FROM users WHERE id = :id");
@@ -86,12 +89,11 @@
 		$notification = $stmt->fetch();
 		if ($notification[0]) {
 			sendMail(["type"=>'','value'=>[
-				'comment_text'=>$_POST['comment_text'],
+				'comment_text'=>htmlspecialchars($data['comment_text']),
 				'username'=>$_SESSION['user']['username']
 				]], "new_comment", $post[0]['email']);
 		}
-		header('location: /post.php?id='.$post_id);
-		exit;
+		exit (json_encode(['success'=>true]));
 	}
 
 	$stmt = $pdo->prepare("SELECT * FROM likes WHERE :post_id = post_id AND :user_id = user_id");

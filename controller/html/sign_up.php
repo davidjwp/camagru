@@ -32,7 +32,7 @@
 	$stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username OR email = :email");
 	$stmt->execute([':username' => $data["username"],':email'=> $data['email']]);
 	$user = $stmt->fetch();
-		
+
 	if (!$user) {
 		$stmt = $pdo->prepare("INSERT INTO users (username, email, password, verification_token, notification) 
 		VALUES (:username, :email, :password, :token, :notification)");

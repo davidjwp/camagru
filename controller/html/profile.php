@@ -24,21 +24,12 @@
 
 	$doc = new DOMDocument();
 	$doc->loadHTMLFile('profile.html');
-
-	if (!isset($data['csrf_token'])) {
-		$_SESSION['csrf-token'] = bin2hex(random_bytes(32));
-	}
 	
 	$doc->getElementById('csrf-token1')->setAttribute('value', $_SESSION['csrf-token']);
 	$doc->getElementById('csrf-token2')->setAttribute('value', $_SESSION['csrf-token']);
 	
-	if (!isset($data['csrf_token']) || $data['csrf_token'] !== $_SESSION['csrf-token']) {
-		http_response_code(403);
-		exit(json_encode(['success' => false, 'message' => 'Invalid CSRF token']));
-	}
-
 	$user = $_SESSION["user"];
-	
+
 	/*check username or email then change them*/
 	$change = ['',''];
 	if (!empty($data["username"])) {
@@ -64,6 +55,7 @@
 		
 		if (!empty($change[0]) || !empty($change[1])) {
 			session_regenerate_id(true);
+			$_SESSION['csrf-token'] = bin2hex(random_bytes(16));
 			exit (json_encode(['success'=>true, 'message'=>'update successful', 'nsi'=>session_id()]));
 		}
 	}
@@ -82,6 +74,7 @@
 				':id' => $user['id']
 				]);
 			session_regenerate_id(true);
+			$_SESSION['csrf-token'] = bin2hex(random_bytes(16));
 			exit (json_encode(['success'=>true, 'message'=>'update successful', 'nsi'=>session_id()]));
 		}
 	}

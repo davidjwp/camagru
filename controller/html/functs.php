@@ -96,7 +96,7 @@ function post($doc, $post, $comments, $comment_count, $liked, $is_user) {
 
             $content = $doc->createElement('div');
             $content->setAttribute('class', 'com_cont');
-            $content->nodeValue = htmlspecialchars($c['content']);
+            $content->nodeValue = htmlspecialchars($c['content'], ENT_QUOTES, 'UTF-8');
 
             $com->appendChild($info);
             $com->appendChild($content);

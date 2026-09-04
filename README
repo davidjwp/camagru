@@ -11,3 +11,38 @@ check for page output of user data like email or username
 also check profile and comments)
 
 checking back all mandatory parts			-
+
+sign_in.html			done/RD XSS SQL	FV War/Logs
+sign_up.html			done/RD XSS SQL FV War/logs
+send_password_reset.html	done/RD XSS SQL FV War/logs
+password_reset.html		done/RD XSS SQL FV War/logs SessFix
+post.html			/RD XSS SQL FV 
+profile.html			done/RD XSS SQL FV War/logs SessFix
+home.html
+editor.hmtl
+
+==============================
+
+index.php			done/RD XSS SQ FV War/logs
+sign_up.php			done/RD XSS SQ FV War/logs
+send_password_reset.php		done/RD XSS SQ FV War/logs
+password_reset.php		done/RD XSS SQ FV War/logs SessFix
+profile.php			done/RD XSS SQ FV War/logs SessFix
+post.php			done/RD SQ XSS FV War/logs 
+verify_email.php		done/RD SQ XSS FV War/logs
+like.php			done/RD SQ XSS FV War/logs
+home.php
+functs.php
+editor.php
+edit_handler.php
+upload_handler.php
+
+server/client side form validation
+SQL query sanitization against injections
+XSS protection HTML/JS injection
+Responsive design
+Warnings/logs
+Cross Origin Resource Sharing (maybe)
+session fixing (check that on major user field updates reg id)
+File upload Security (done already)
+max csrf cookie security (SameSite=Strict; Secure;)

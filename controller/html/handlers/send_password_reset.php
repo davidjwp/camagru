@@ -4,22 +4,13 @@
 
 	$data = json_decode(file_get_contents('php://input'), true);
 
-	if (!isset($data['csrf_token'])) {
-		$_SESSION['csrf-token'] = bin2hex(random_bytes(32));
-	}
-
-	if (!isset($data['csrf_token']) || $data['csrf_token'] !== $_SESSION['csrf-token']) {
-		http_response_code(403);
-		exit(json_encode(['success' => false, 'message' => 'Invalid CSRF token']));
-	}
 	$pdo = new PDO(
 		'mysql:host=model;dbname=camagru;charset=utf8',
 		'camagru_admin',
 		'camagru_admin_pass'
 	);
 
-	if (isset($data['username']) && isset($data['email']) && 
-	isset($data['csrf_token']) && $data['csrf_token'] === $_SESSION['csrf-token']) {
+	if (isset($data['username']) && isset($data['email'])) {
 		
 		if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) 
 			exit (json_encode(['success'=>false, 'message'=>'invalid email address']));
