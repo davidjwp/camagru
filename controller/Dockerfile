@@ -1,11 +1,10 @@
 FROM    php:8.2-apache
 
-ARG		SERV_PORT=${SERV_PORT} 
+ARG	SERV_PORT=${SERV_PORT} 
 
 EXPOSE	${SERV_PORT}
 
 ARG		SERV_ADDRESS=${SERV_ADDRESS}
-ARG		SERVF=${SERVF}
 
 COPY php.ini /usr/local/etc/php/conf.d/mail.ini
 COPY ssmtp.conf /etc/ssmtp/ssmtp.conf

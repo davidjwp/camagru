@@ -1,3 +1,11 @@
+CREATE DATABASE IF NOT EXISTS camagru;
+
+USE camagru;
+
+CREATE USER IF NOT EXISTS 'camagru_admin'@'%' IDENTIFIED BY 'camagru_admin_pass';
+GRANT ALL PRIVILEGES ON camagru.* TO 'camagru_admin'@'%';
+FLUSH PRIVILEGES;
+
 CREATE TABLE users (
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	username VARCHAR(50) NOT NULL UNIQUE,
@@ -35,4 +43,4 @@ CREATE TABLE likes (
 	FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
 	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
 	UNIQUE (post_id, user_id)
-);
+); 

@@ -48,3 +48,5 @@ Cross Origin Resource Sharing (maybe)
 session fixing (check that on major user field updates reg id)
 File upload Security (done already)
 max csrf cookie security (SameSite=Strict; Secure;)
+
+switch ALL PDO connections with env MYSQL_USER and MYSQL_PASSWORD for final sec

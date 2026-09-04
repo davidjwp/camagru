@@ -1,11 +1,10 @@
 <?php 	
     require_once '../functs.php';
-//	ob_start();
+	ob_start();
     session_start();
 error_log(' HEYEYEYEYEYYEY');
     if (!isset($_SESSION['user'])) {
         echo json_encode(['success' => false]);
-	error_log('WHAT IS GOING ON');
         exit;
     }
 
@@ -17,7 +16,7 @@ error_log(' HEYEYEYEYEYYEY');
 
     if (!isset($_SESSION['tmp_dir'])) {$_SESSION['tmp_dir'] = $user_tmp;}
 
-    $data = json_decode(file_get_contents('php://input'), 
+    $data = json_decode(file_get_contents('php://input')); 
 
     error_log('HERE IS THE START THE CONDITION');
     if (isset($data['get_thumbs'])) {

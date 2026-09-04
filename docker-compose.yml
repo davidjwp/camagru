@@ -2,10 +2,10 @@ name: camagru
 
 services:
   model:
+    image: mysql:latest
     container_name: model
     env_file:
       - .env
-    image: mysql:latest
     volumes:
       - mysql:/var/lib/mysql
       - ./model/init.sql:/docker-entrypoint-initdb.d/init.sql
