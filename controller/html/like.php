@@ -1,9 +1,9 @@
 <?php 
 	require_once 'functs.php';
-	ob_start();
 	session_start();
 	
 	if (!isset($_SESSION['user'])) {
+		header('Content-Type: application/json');
 		header('location: /index.php');
 		exit;
 	}
@@ -15,7 +15,6 @@
 	);
 	
 	$data = json_decode(file_get_contents('php://input'), true);
-    error_log("post id: " . print_r($data, true));
 	
 	$like = "INSERT INTO likes (post_id, user_id) VALUES (:post_id, :user_id)";
 	$unlike = "DELETE FROM likes WHERE :post_id = post_id AND :user_id = user_id";
@@ -38,7 +37,6 @@
     $count_stmt->execute([":post_id" => $data['id']]);
     $count = $count_stmt->fetch();
 
-    ob_clean();
     header('Content-Type: application/json');
     echo json_encode(['success' => true, 'like_count' => $count['like_count'], 'liked' => !$liked]);
     exit;

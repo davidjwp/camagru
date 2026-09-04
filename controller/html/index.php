@@ -1,10 +1,6 @@
 <?php
 	session_start();
 
-	if (empty($_POST['csrf-token'])) {
-		$_SESSION['csrf-token'] = bin2hex(random_bytes(32));
-	}
-
 	//create PDO connection to database then fetch user
 	$pdo = new PDO(
 		"mysql:host=model;dbname=camagru;charset=utf8",
@@ -13,8 +9,7 @@
 	);
 
 	//check username, password and csrf token then search user
-	if (isset($_POST["username"]) && isset($_POST["password"]) && 
-	$_POST['csrf-token'] == $_SESSION['csrf-token']) {
+	if (isset($_POST["username"]) && isset($_POST["password"])) {
 		$stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username");
 		$stmt->execute([':username' => $_POST['username']]);
 		$user = $stmt->fetch();

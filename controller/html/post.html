@@ -606,6 +606,8 @@
     </div>
 
     <script>
+        // const heart = document.getElementById('heart');
+
         function toggleLike(postId, postLiked, like_count) {
             fetch('/like.php', {
                 method: 'POST',
@@ -617,18 +619,22 @@
                 const heart = document.getElementById('heart' + postId);
                 const counter = document.getElementById('likes_counter');
 
-                heart.classList.toggle('liked');
+                if (data.liked) {
+                    heart.classList.toggle('liked');
+                    heart.style.fill = '#e53e3e';
+                }
+                else {
+                    heart.classList.remove('liked');
+                    heart.style.fill = 'none';
+                }
+
                 heart.classList.add('animate');
 
-                if (!data.like_count) {
-                    counter.textContent = '0 likes';
-                } else {
-                    counter.textContent = data.like_count + ' likes';
-                }
+                if (!data.like_count) counter.textContent = '0 likes';
+                else counter.textContent = data.like_count + ' likes';
 
                 setTimeout(() => heart.classList.remove('animate'), 300);
             })
-            .catch(err => console.error('Like error:', err));
         }
 
         function del() {

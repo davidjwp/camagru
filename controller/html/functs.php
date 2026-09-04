@@ -37,6 +37,7 @@ function post($doc, $post, $comments, $comment_count, $liked, $is_user) {
 
     $like_btn = $doc->createElement('button');
     $like_btn->setAttribute('class', 'like-btn');
+    $like_btn->setAttribute('id', 'like-btn');
     $like_btn->setAttribute('onclick', "toggleLike(" . $post[0]['id'] . "," . ($liked ? 'true' : 'false') . "," . $post[0]['like_count'] . ")");
 
     // Heart SVG

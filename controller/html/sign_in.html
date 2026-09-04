@@ -227,7 +227,6 @@
 			<div class="error-msg" id="errorMsg">Invalid username or password</div>
 
 			<form action="/index.php" method="post">
-				<input type="hidden" name="csrf-token" value="<?= $_SESSION['csrf-token'] ?>">
 				<input type="text" name="username" placeholder="Username or email" required>
 				<input type="password" name="password" placeholder="Password" required>
 

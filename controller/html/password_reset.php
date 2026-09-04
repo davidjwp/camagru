@@ -4,15 +4,6 @@
 
 	$data = json_decode(file_get_contents('php://input'), true);
 
-	if (!isset($data['csrf_token'])) {
-		$_SESSION['csrf-token'] = bin2hex(random_bytes(32));
-	}
-
-	if (!isset($data['csrf_token']) || $data['csrf_token'] !== $_SESSION['csrf-token']) {
-		http_response_code(403);
-		exit(json_encode(['success' => false, 'message' => 'Invalid CSRF token']));
-	}
-
 	$pdo = new PDO(
 		'mysql:host=model;dbname=camagru;charset=utf8',
 		'camagru_admin',
@@ -33,8 +24,7 @@
     $user = $stmt->fetch();
     if (!$user) exit(json_encode(['redirect'=>false,'message'=>'invalid or expired token']));
 
-	if (isset($data['password1']) && isset($data['password2']) &&
-	isset($data['csrf_token']) && $data['csrf_token'] === $_SESSION['csrf-token']) {
+	if (isset($data['password1']) && isset($data['password2'])) {
 
 		if (strlen($data['password1']) < 5 || strlen($data['password1']) > 20 ||
 		!preg_match('/[!@#$%^&*(){}\-_=+?\/.>,<;:]/', $data['password1']) ||
