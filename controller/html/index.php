@@ -4,8 +4,8 @@
 	//create PDO connection to database then fetch user
 	$pdo = new PDO(
 		"mysql:host=model;dbname=camagru;charset=utf8",
-		"camagru_admin",
-		"camagru_admin_pass"
+		$_ENV['MYSQL_USER'],
+		$_ENV['MYSQL_PASSWORD']
 	);
 
 	//check username, password and csrf token then search user

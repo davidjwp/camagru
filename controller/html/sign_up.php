@@ -4,6 +4,7 @@
 
 	$data = json_decode(file_get_contents('php://input'), true);
 
+	if (!empty($data)) {
 	//if any error in user input send back a json with error message
 	if (empty($data['username'])) exit (json_encode(['success'=>false, 'message'=>'missing username']));
 	if (empty($data['password'])) exit (json_encode(['success'=>false, 'message'=>'missing password']));
@@ -48,7 +49,7 @@
 	}
 	else if (!$user['is_verified']) sendMail(['type'=>"token","value"=> $token], "verification", $data["email"]);
 	else exit (json_encode(['success'=>true, 'message'=>'user already exists']));
-
+}
 	if (isset($data['form'])) { 
 		header('Content-Type: application/json');
 		exit ;

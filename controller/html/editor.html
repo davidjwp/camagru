@@ -584,7 +584,7 @@
         let isDragging = false;
         let dragOffsetX, dragOffsetY;
         const stickerImg = new Image();
-
+     
         // start webcam/video set size setup canvas and loop
         navigator.mediaDevices.getUserMedia({ video: {
                 width: { ideal: 1280, max: 1920},
@@ -592,14 +592,13 @@
         }})
         .then(stream => { video.srcObject = stream; 
             video.onloadedmetadata = function() {
-                
                 videoReady = true;
                 setupCanvas({width: video.videoWidth, height: video.videoHeight});
                 loopRunning = false;
                 startPreviewLoop(video);
             };
         })
-        .catch(err => {
+    .catch(err => {
             video.style.display = 'none';
             uploadInput.style.display = 'block';
         });
@@ -760,7 +759,8 @@
             sidebar.prepend(img);
         }
 
-        function loadThumbnails() {
+            function loadThumbnails() {
+	    console.log('before loadThumbnails');
             fetch('/handlers/edit_handler.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -768,6 +768,7 @@
             })
             .then(res => res.json())
             .then(data => {
+	    console.log('hey');
                 if (!data.files) return;
                 const sidebar = document.getElementById('tmp-thumbnails');
                 data.files.forEach(thumb => {
@@ -785,8 +786,9 @@
                     });
                     sidebar.prepend(img);
                 });
-            });
-        }
+            }).catch(err=>{console.log('error loadThumbnails ', err)});
+	    console.log('after loadThumbnail');
+	    }
 
         function backToWebcam() {
             usingUpload = false;
