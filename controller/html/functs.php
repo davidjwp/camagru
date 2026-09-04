@@ -4,7 +4,6 @@ function post($doc, $post, $comments, $comment_count, $liked, $is_user) {
     $post_target = $doc->getElementById('post');
     $com_target = $doc->getElementById('comments');
 
-    // --- Post Meta (user info) ---
     $meta = $doc->createElement('div');
     $meta->setAttribute('class', 'post-meta');
 
@@ -25,13 +24,12 @@ function post($doc, $post, $comments, $comment_count, $liked, $is_user) {
 
     $post_target->appendChild($meta);
 
-    // --- Image ---
+    //image
     $image = $doc->createElement('img');
     $image->setAttribute('class', 'post-image');
     $image->setAttribute('src', '/uploads/' . $post[0]['image_path']);
     $post_target->appendChild($image);
 
-    // --- Actions (likes + delete) ---
     $actions = $doc->createElement('div');
     $actions->setAttribute('class', 'post-actions');
 
@@ -75,7 +73,6 @@ function post($doc, $post, $comments, $comment_count, $liked, $is_user) {
 
     $post_target->appendChild($actions);
 
-    // --- Comments ---
     if ($comment_count) {
         foreach ($comments as $c) {
             $com = $doc->createElement('div');
@@ -131,8 +128,6 @@ function post($doc, $post, $comments, $comment_count, $liked, $is_user) {
 		$target->appendChild($err);
 	}
 
-	function alert($msg) {echo "<script>alert('Error: ".$msg."');</script>";}
-
 	function LoadPosts($doc, $posts) {
 		$target = $doc->getElementById('posts');
 
@@ -150,38 +145,6 @@ function post($doc, $post, $comments, $comment_count, $liked, $is_user) {
 			$div->appendChild($a);
 			$target->appendChild($div);
 		}
-	}
-
-	function AppendPasswordReset($doc) {
-		$target = $doc->getElementById('reset_password');
-		
-		$form = $doc->createElement('form');
-		$form->setAttribute('action', '/profile.php');
-		$form->setAttribute('method', 'post');
-
-		$input1 = $doc->createElement('input');
-		$input1->setAttribute('type', 'password');
-		$input1->setAttribute('name', 'password1');
-		$input1->setAttribute('placeholder', 'new password');
-		
-		$form->appendChild($input1);
-		$form->appendChild($doc->createElement('br'));
-
-		$input2 = $doc->createElement('input');
-		$input2->setAttribute('type', 'password');
-		$input2->setAttribute('name', 'password2');
-		$input2->setAttribute('placeholder', 'confirm new password');
-
-		$form->appendChild($input2);
-		$form->appendChild($doc->createElement('br'));
-		
-		$input3 = $doc->createElement('input');
-		$input3->setAttribute('type', 'submit');
-		$input3->setAttribute('name', 'submit');
-		$input3->setAttribute('value', 'send');
-
-		$form->appendChild($input3);
-		$target->appendChild($form);
 	}
 
 	function sendMail($data, $type, $to) {
@@ -207,8 +170,5 @@ function post($doc, $post, $comments, $comment_count, $liked, $is_user) {
 		}
 
 		$result = mail($to, $subject, $message);
-		if (!$result) {
-			alert("Mail failed");
-			error_log(error_get_last());
-		}
+		if (!$result) exit (json_encode(['success'=>false, 'message'=>'mail failed']));
 	}

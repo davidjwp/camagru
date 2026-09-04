@@ -337,61 +337,192 @@
                 margin-top: auto;
             }
 
-            @media (max-width: 768px) {
-                .main-content {
-                    flex-direction: column;
-                    padding: 12px 14px;
-                }
-                .sidebar {
-                    width: 100%;
-                }
-                .header {
-                    padding: 10px 14px;
-                }
-                .header-left h1 {
-                    font-size: 18px;
-                }
-                .header-left .tagline {
-                    display: none;
-                }
-                .btn-header {
-                    font-size: 11px;
-                    padding: 5px 12px;
-                }
-                #webcam-container {
-                    max-width: 100%;
-                    aspect-ratio: 4/3;
-                }
-                .editor-main {
-                    padding: 14px;
-                }
-                .editor-sidebar .thumbnail {
-                    width: 50px;
-                    height: 50px;
-                }
+            @media screen and (max-device-width: 700px), screen and (min-device-width: 3000px) {
+				html {
+					font-size: 25px;
+				}
+				body {
+					padding: 0;
+					align-items: flex-start;
+					min-height: 100vh;
+				}
+				.header {
+					padding: 16px 20px;
+					width: 100%;
+					border-radius: 0;
+				}
+
+				.header-left h1 {
+					font-size: 2.2rem;
+				}
+
+				.header-left .tagline {
+					font-size: 1.2rem;
+				}
+
+				.btn {
+					font-size: 1.3rem;
+					padding: 12px 24px;
+				}
+
+				.btn-disconnect {
+					font-size: 1.1rem;
+					padding: 10px 18px;
+				}
+                  .main-content {
+            padding: 16px 14px;
+            gap: 16px;
+            flex-direction: column;
+        }
+
+        .body-content {
+            width: 100%;
+        }
+
+        .editor-main {
+            padding: 16px;
+            border-radius: 14px;
+        }
+
+        /* ===== WEBCAM / CANVAS ===== */
+        #webcam-container {
+            width: 100%;
+            max-width: 100%;
+            aspect-ratio: 4/3;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        #webcam-container video,
+        #webcam-container canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: contain;
+        }
+
+        #webcam-container #webcam-btn {
+            font-size: 1.2rem;
+            padding: 12px 28px;
+            bottom: 16px;
+        }
+
+        #webcam-container #image-upload {
+            font-size: 1.2rem;
+            padding: 30px 20px;
+        }
+
+        #webcam-container #image-upload::file-selector-button {
+            font-size: 1.2rem;
+            padding: 12px 28px;
+        }
+
+        /* ===== STICKERS ===== */
+        #stickers {
+            gap: 12px;
+            padding: 20px 0 16px;
+        }
+
+        #stickers .sticker {
+            width: 120px; /* ← BIGGER */
+            height: 120px; /* ← BIGGER */
+            border-width: 3px;
+            border-radius: 12px;
+        }
+
+        /* ===== CAPTURE BUTTON ===== */
+        #capture-btn {
+            font-size: 1.4rem;
+            padding: 16px;
+            max-width: 100%;
+            border-radius: 12px;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 100%;
+            gap: 16px;
+        }
+
+        .editor-sidebar {
+            padding: 20px 16px;
+            border-radius: 14px;
+        }
+
+        .editor-sidebar #tmp-thumbnails {
+            gap: 12px;
+        }
+
+        .editor-sidebar .thumbnail {
+            width: 80px; /* ← BIGGER */
+            height: 80px; /* ← BIGGER */
+            border-radius: 10px;
+            border-width: 3px;
+        }
+
+        .editor-sidebar form {
+            margin-top: 16px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .editor-sidebar form input[type="submit"] {
+            font-size: 1.2rem;
+            padding: 10px 24px;
+            border-radius: 8px;
+        }
+
+        .editor-sidebar form input[type="file"] {
+            font-size: 1.1rem;
+        }
+				.footer {
+					padding: 16px 20px;
+					width: 100%;
+					margin-top: auto;
+					border-radius: 0;
+				}
+
+				.footer p {
+					font-size: 1rem;
+					padding: 4px 0;
+				}
+
             }
 
-            @media (max-width: 480px) {
-                .header-right {
-                    gap: 4px;
-                }
-                .btn-header {
-                    font-size: 10px;
-                    padding: 4px 10px;
-                }
-                #stickers .sticker {
-                    width: 44px;
-                    height: 44px;
-                }
-                .editor-sidebar .thumbnail {
-                    width: 42px;
-                    height: 42px;
-                }
-                #capture-btn {
-                    font-size: 14px;
-                    padding: 10px;
-                }
-            }
+@media screen and (max-device-width: 700px) {
+    #stickers .sticker {
+        width: 80px;
+        height: 80px;
+    }
+
+    .editor-sidebar .thumbnail {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+/* ===== 4K ONLY (≥3000px) ===== */
+@media screen and (min-device-width: 3000px) {
+    #stickers .sticker {
+        width: 180px; /* ← EVEN BIGGER for 4K */
+        height: 180px;
+    }
+
+    .editor-sidebar .thumbnail {
+        width: 120px;
+        height: 120px;
+    }
+
+    .editor-main {
+        padding: 32px;
+        border-radius: 20px;
+    }
+
+    #capture-btn {
+        font-size: 1.8rem;
+        padding: 20px;
+    }
+}
 
         </style>
     </head>
@@ -429,6 +560,7 @@
             <div class="editor-sidebar">
                 <div id="user-posts"></div>
                 <form id="upload" action="/handlers/upload_handler.php" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf-token" id="csrf-token">
                     <input type="file" name="file-upload" hidden>
                     <div id="tmp-thumbnails"></div>
                     <input type="submit" name="submit" value="Upload">
@@ -465,7 +597,6 @@
                 setupCanvas({width: video.videoWidth, height: video.videoHeight});
                 loopRunning = false;
                 startPreviewLoop(video);
-                console.log('Webcam ready:', video.videoWidth, 'x', video.videoHeight);
             };
         })
         .catch(err => {

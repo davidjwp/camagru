@@ -23,6 +23,8 @@
 	$doc->loadHTMLFile("editor.html");
 	libxml_clear_errors();
 
+	$doc->getElementById('csrf-token')->setAttribute('value', $_SESSION['csrf-token']);
+
 	$stickers = glob('/var/www/html/Stickers/*.png');
 	$target = $doc->getElementById("stickers");
 	addStickers($stickers, $target, $doc);

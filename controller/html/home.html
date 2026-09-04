@@ -231,7 +231,7 @@
                 letter-spacing: 0.3px;
             }
 
-			@media screen and (max-device-width: 700px), screen and (min-device-width: 3000px) {
+			@media screen and (max-device-width: 700px) {
 				html {
 					font-size: 25px;
 				}
@@ -260,12 +260,48 @@
 					padding: 10px 18px;
 				}
 
-                .post {
-                    /* width: ; */
-                }
-                #pagination a {
-                    font-size: 35px;
-                }
+    .main-content {
+        padding: 16px 12px;
+        max-width: 100%;
+    }
+
+    #posts {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* ← BIGGER */
+        gap: 20px;
+    }
+
+    .post {
+        border-radius: 14px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+
+    .post img {
+        height: 300px; /* ← BIGGER */
+        object-fit: cover;
+    }
+
+    .post .post-info .username {
+        font-size: 1.3rem;
+    }
+
+    .post .post-info .meta {
+        font-size: 1.1rem;
+    }
+
+    #pagination {
+        gap: 16px;
+        padding: 30px 0 10px;
+    }
+
+    #pagination a {
+        padding: 12px 24px;
+        font-size: 1.2rem;
+        border-radius: 10px;
+    }
+
+    #pagination .page-indicator {
+        font-size: 1.2rem;
+    }
 
                 .footer {
 					padding: 16px 20px;
@@ -280,6 +316,106 @@
 				}
 
             }
+            
+            @media screen and (min-device-width: 3000px) {
+    html {
+        font-size: 25px;
+    }
+
+    .header {
+        padding: 20px 40px;
+        width: 100%;
+        border-radius: 0;
+    }
+
+    .header-left h1 {
+        font-size: 3rem;
+    }
+
+    .header-left .tagline {
+        font-size: 1.5rem;
+    }
+
+    .btn {
+        font-size: 1.6rem;
+        padding: 16px 32px;
+    }
+
+    .btn-disconnect {
+        font-size: 1.3rem;
+        padding: 12px 24px;
+    }
+
+    .main-content {
+        padding: 30px 40px;
+        max-width: 100%;
+    }
+
+    #posts {
+        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); /* ← BIGGER */
+        gap: 30px;
+    }
+
+    .post {
+        border-radius: 20px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+    }
+
+    .post:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+    }
+
+    .post img {
+        height: 400px; /* ← BIGGER */
+        object-fit: cover;
+    }
+
+    .post .post-info {
+        padding: 16px 20px 20px;
+    }
+
+    .post .post-info .username {
+        font-size: 1.6rem;
+    }
+
+    .post .post-info .meta {
+        font-size: 1.3rem;
+        margin-top: 8px;
+    }
+
+    .post .post-info .meta .likes::before {
+        font-size: 1.4rem;
+    }
+
+    #pagination {
+        gap: 20px;
+        padding: 40px 0 20px;
+    }
+
+    #pagination a {
+        padding: 14px 32px;
+        font-size: 1.4rem;
+        border-radius: 12px;
+    }
+
+    #pagination .page-indicator {
+        font-size: 1.4rem;
+    }
+
+    .footer {
+        padding: 20px 40px;
+        width: 100%;
+        margin-top: auto;
+        border-radius: 0;
+    }
+
+    .footer p {
+        font-size: 1.2rem;
+        padding: 6px 0;
+    }
+}
+            
         </style>
     </head>
 <body>

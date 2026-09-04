@@ -29,7 +29,8 @@
 	$total_pages = ceil($post_count / $LIMIT);
 
 	$page = isset($_GET['page']) ? $_GET['page']: 1;
-	
+	if ($page > $total_pages) $page = 1;
+
 	$OFFSET = ($page - 1) * $LIMIT;
 	$stmt = $pdo->prepare('SELECT * FROM posts ORDER BY posts.created_at DESC LIMIT :lmt OFFSET :ost');
 	$stmt->bindValue(":lmt", $LIMIT, PDO::PARAM_INT);

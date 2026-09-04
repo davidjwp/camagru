@@ -16,9 +16,10 @@ sign_in.html			done/RD XSS SQL	FV War/Logs
 sign_up.html			done/RD XSS SQL FV War/logs
 send_password_reset.html	done/RD XSS SQL FV War/logs
 password_reset.html		done/RD XSS SQL FV War/logs SessFix
-post.html			/RD XSS SQL FV 
 profile.html			done/RD XSS SQL FV War/logs SessFix
-home.html
+post.html			done/RD XSS SQL FV War/logs SessFix
+home.html			done/RD XSS SQL FV War/logs			
+
 editor.hmtl
 
 ==============================
@@ -28,11 +29,12 @@ sign_up.php			done/RD XSS SQ FV War/logs
 send_password_reset.php		done/RD XSS SQ FV War/logs
 password_reset.php		done/RD XSS SQ FV War/logs SessFix
 profile.php			done/RD XSS SQ FV War/logs SessFix
-post.php			done/RD SQ XSS FV War/logs 
-verify_email.php		done/RD SQ XSS FV War/logs
+post.php			done/RD SQ XSS FV War/logs (rm stylesheet)
 like.php			done/RD SQ XSS FV War/logs
-home.php
-functs.php
+home.php			done/RD SQ XSS FV War/logs
+verify_email.php		done/RD SQ XSS FV War/logs
+functs.php			done/RD SQ XSS FV War/logs
+
 editor.php
 edit_handler.php
 upload_handler.php
