@@ -2,7 +2,7 @@
     require_once '../functs.php';
 	ob_start();
     session_start();
-error_log(' HEYEYEYEYEYYEY');
+
     if (!isset($_SESSION['user'])) {
         echo json_encode(['success' => false]);
         exit;
@@ -16,20 +16,16 @@ error_log(' HEYEYEYEYEYYEY');
 
     if (!isset($_SESSION['tmp_dir'])) {$_SESSION['tmp_dir'] = $user_tmp;}
 
-    $data = json_decode(file_get_contents('php://input')); 
+    $data = json_decode(file_get_contents('php://input'), true);
 
-    error_log('HERE IS THE START THE CONDITION');
     if (isset($data['get_thumbs'])) {
-        $tmp_dir = '/var/www/html/tmp/' . $_SESSION['user']['id'] . '/';
-	error_log('EOHOEHR');
-        $thumbnails = scandir($tmp_dir, SCANDIR_SORT_ASCENDING);
-
-	error_log('HERHEHRE');
-        array_splice($thumbnails, 0, 2);
-	error_log('HOEHO');
         $files = null;
-        if (count($thumbnails)) $files = $thumbnails;
-	error_log('HERHEHRHEHREHR');
+        $tmp_dir = '/var/www/html/tmp/' . $_SESSION['user']['id'] . '/';
+        if (is_dir($tmp_dir)) {
+            $thumbnails = scandir($tmp_dir, SCANDIR_SORT_ASCENDING);
+            array_splice($thumbnails, 0, 2);
+            if (count($thumbnails)) $files = $thumbnails;
+        }
         $json = ['files'=> $files, 'path' => '/tmp/'.$_SESSION['user']['id'].'/'];
         echo json_encode($json);
         exit ;
