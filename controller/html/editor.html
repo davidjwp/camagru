@@ -577,6 +577,8 @@
         const captureBtn = document.getElementById('capture-btn');
         const uploadInput = document.getElementById('image-upload');
         const webcamBtn = document.getElementById('webcam-btn');
+        const csrf = document.getElementById('csrf-token').value;
+        // const upload = document.getElementById('upload');
         let img, loopRunning = false;
         let selectedSticker = null;
         let usingUpload = false;
@@ -584,7 +586,7 @@
         let isDragging = false;
         let dragOffsetX, dragOffsetY;
         const stickerImg = new Image();
-     
+
         // start webcam/video set size setup canvas and loop
         navigator.mediaDevices.getUserMedia({ video: {
                 width: { ideal: 1280, max: 1920},
@@ -598,11 +600,12 @@
                 startPreviewLoop(video);
             };
         })
-    .catch(err => {
+        .catch(err => {
             video.style.display = 'none';
             uploadInput.style.display = 'block';
         });
 
+        //exactly what it sounds like, setup canvas width/height
         function setupCanvas(size) {
             canvas.width = size.width;
             canvas.height = size.height;
@@ -611,6 +614,11 @@
             stickerY = (canvas.height - stickerImg.height) / 2;
         }
 
+        /*
+            on uploading image get file and read it's metadata 
+            setup canvas to fit img size and start loop onload then make file the img.src
+            then turn image data into data URL for displaying on the page
+        */
         uploadInput.addEventListener('change', event => {
             const file = event.target.files[0];
             if (!file) return;
@@ -638,6 +646,7 @@
             reader.readAsDataURL(file);
         });
 
+        //on mousedown update sticker coordinates
         canvas.addEventListener('mousedown', e => {
             const rect = canvas.getBoundingClientRect();
             const scaleX = canvas.width / rect.width;
@@ -654,6 +663,7 @@
             }
         });
 
+        //on mousemove update sticker coordinates when dragging, release when mouseup
         canvas.addEventListener('mousemove', e => {
             if (!isDragging) return;
             const rect = canvas.getBoundingClientRect();
@@ -666,7 +676,43 @@
 
         canvas.addEventListener('mouseup', () => isDragging = false);
         
-        /*if no image then canvas is from video drawn onto canvas then send to php handler*/
+        //these are exactly the same for mobile
+        canvas.addEventListener('touchstart', e => {
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            
+            const touch = e.touches[0];
+            const mx = (touch.clientX - rect.left) * scaleX;
+            const my = (touch.clientY - rect.top) * scaleY;
+            
+            if (mx >= stickerX && mx <= stickerX + stickerImg.width &&
+                my >= stickerY && my <= stickerY + stickerImg.height) {
+                isDragging = true;
+                dragOffsetX = mx - stickerX;
+                dragOffsetY = my - stickerY;
+            }
+        });
+
+        canvas.addEventListener('touchmove', e => {
+            e.preventDefault();
+            if (!isDragging) return;
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            
+            const touch = e.touches[0];
+            stickerX = (touch.clientX - rect.left) * scaleX - dragOffsetX;
+            stickerY = (touch.clientY - rect.top) * scaleY - dragOffsetY;
+        });
+
+        canvas.addEventListener('touchend', () => {isDragging = false;});
+
+        /*
+            onclick capture button, if not an image upload draw the webcam on context
+            send canvas data and sticker coordinates to php to superimpose on the image
+        */
         function capture() {
             if (!usingUpload) {
                 const ctx = canvas.getContext('2d');
@@ -676,23 +722,27 @@
             }
             const data = canvas.toDataURL('image/jpeg');
 
+            console.log('here');
             fetch('/handlers/edit_handler.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
+                body: JSON.stringify({
                     image: data,
                     sticker: selectedSticker,
                     stickerX: stickerX,
-                    stickerY: stickerY
+                    stickerY: stickerY,
+                    csrf_token: csrf
                     })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) addThumbnail(data.file);
-                    else console.log(data.error);
-                });
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) addThumbnail(data.file);
+                else console.log(data.error);
+            })
+            .catch(err=> {console.log('what ? ', err);});
         }
 
+        //loop for drawing webcam or image and sticker on top
         function startPreviewLoop(source) {
             loopRunning = true;
             const ctx = canvas.getContext('2d');
@@ -711,6 +761,7 @@
             loop();
         }
 
+        //onclick sticker remove all other sticker style, add style to selected and load sticker on image or webcam
         function selectSticker(el, path) {
             document.querySelectorAll('.sticker').forEach(s => s.classList.remove('selected'));
             el.classList.add('selected');
@@ -720,12 +771,13 @@
                 stickerX = (canvas.width - stickerImg.width) / 2;
                 stickerY = (canvas.height - stickerImg.height) / 2;
                 loopRunning = false;
-                if (usingUpload) startPreviewLoop(img); // static image, draw once
-                else startPreviewLoop(video);        // webcam, draw continuously
+                if (usingUpload) startPreviewLoop(img);
+                else startPreviewLoop(video);
                 captureBtn.disabled = false;
             };
         }
 
+        //onclick function adds style, deselects all previous thumbnails and adds it to form upload
         function selectThumbnail() {
             document.querySelectorAll('.thumbnail').forEach(thmb => thmb.classList.remove('selected'));
             this.classList.add('selected');
@@ -742,9 +794,11 @@
             hiddenInput.value = selectedThumbnail;
         }
 
+        //called after successful capture, builds thumbnail element with even listener and onclick
         function addThumbnail(file) {
             const sidebar = document.getElementById('tmp-thumbnails');
             const img = document.createElement('img');
+
             img.src = file;
             img.className = 'thumbnail';
             img.onclick = selectThumbnail;
@@ -752,44 +806,55 @@
                 fetch('/handlers/edit_handler.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ delete_thumbnail: true, img_src: img.src })
-                });
+                    body: JSON.stringify({
+                        delete_thumbnail: true,
+                        img_src: img.src,
+                        csrf_token: csrf
+                    })});
                 img.remove();
             });
             sidebar.prepend(img);
         }
 
-            function loadThumbnails() {
-	    console.log('before loadThumbnails');
-            fetch('/handlers/edit_handler.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ get_thumbs: true })
-            })
-            .then(res => res.json())
-            .then(data => {
-	    console.log('hey');
-                if (!data.files) return;
-                const sidebar = document.getElementById('tmp-thumbnails');
-                data.files.forEach(thumb => {
-                    const img = document.createElement('img');
-                    img.src = data.path + thumb;
-                    img.className = 'thumbnail';
-                    img.onclick = selectThumbnail;
-                    img.addEventListener('dblclick', event => {
-                        fetch('/handlers/edit_handler.php', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ delete_thumbnail: true, img_src: img.src })
-                        });
-                        img.remove();
-                    });
-                    sidebar.prepend(img);
-                });
-            }).catch(err=>{console.log('error loadThumbnails ', err)});
-	    console.log('after loadThumbnail');
+        /*
+            ajax fetch to get thumbnails then for each thumbnail gotten
+            add img path and event listener for dblcick which deletes the img on the backend
+            then removes it on the front end
+        
+        */
+        function loadThumbnails() {
+           fetch('/handlers/edit_handler.php', {
+               method: 'POST',
+               headers: { 'Content-Type': 'application/json' },
+               body: JSON.stringify({ get_thumbs: true, csrf_token: csrf })
+           })
+           .then(res => res.json())
+           .then(data => {
+               if (!data.success) return (console.log(data.error));
+               if (!data.files) return;
+               const sidebar = document.getElementById('tmp-thumbnails');
+               data.files.forEach(thumb => {
+                   const img = document.createElement('img');
+                   img.src = data.path + thumb;
+                   img.className = 'thumbnail';
+                   img.onclick = selectThumbnail;
+                   img.addEventListener('dblclick', event => {
+                       fetch('/handlers/edit_handler.php', {
+                           method: 'POST',
+                           headers: { 'Content-Type': 'application/json' },
+                           body: JSON.stringify({ 
+                               delete_thumbnail: true,
+                               img_src: img.src,
+                               csrf_token: csrf
+                           })});
+                       img.remove();
+                   });
+                   sidebar.prepend(img);
+               });
+           });
 	    }
 
+        //re-add canvas, remove webcamtBtn and start webcam preview
         function backToWebcam() {
             usingUpload = false;
     

@@ -25,6 +25,7 @@
 
 	$doc->getElementById('csrf-token')->setAttribute('value', $_SESSION['csrf-token']);
 
+	error_log($_SESSION['csrf-token']);
 	$stickers = glob('/var/www/html/Stickers/*.png');
 	$target = $doc->getElementById("stickers");
 	addStickers($stickers, $target, $doc);

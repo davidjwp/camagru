@@ -12,16 +12,19 @@
 	libxml_use_internal_errors(true);
 	$doc->loadHTMLFile("../editor.html");
 	libxml_clear_errors();
+
+	$doc->getElementById('csrf-token')->setAttribute('value', $_SESSION['csrf-token']);
+
 	$stickers = glob('/var/www/html/Stickers/*.png');
 	$target = $doc->getElementById("stickers");
-		
+
 	$pdo = new PDO(
 		"mysql:host=model;dbname=camagru;charset=utf8",
 		"camagru_admin",
 		"camagru_admin_pass"
-		);
+	);
 
-	if (isset($_POST['selected_thumbnail']) && $_POST['csrf-token'] === $_SESSION['csrf-token']) {
+	if (isset($_POST['selected_thumbnail']) && isset($_POST['csrf-token']) && $_POST['csrf-token'] === $_SESSION['csrf-token']) {
 		$filename = basename($_POST['selected_thumbnail']);
 		$file_path = $_SESSION['tmp_dir'].'/'.$filename;
 
