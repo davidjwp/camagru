@@ -29,11 +29,12 @@
 
 	$token = random_bytes(32);
 
+
 	//checks that user exists then insert user row into users table
 	$stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username OR email = :email");
 	$stmt->execute([':username' => $data["username"],':email'=> $data['email']]);
 	$user = $stmt->fetch();
-
+	error_log('HERE1');
 	if (!$user) {
 		$stmt = $pdo->prepare("INSERT INTO users (username, email, password, verification_token, notification) 
 		VALUES (:username, :email, :password, :token, :notification)");
@@ -44,10 +45,14 @@
 			':token' => bin2hex($token),
 			':notification'=>1
 		]);
+		error_log('HERE2');
 		sendMail(['type'=>"token","value"=> $token], "verification", $data['email']);
 		exit (json_encode(['success'=>true, 'message'=>"a verification email was sent to ".htmlspecialchars($data['email'])]));
 	}
-	else if (!$user['is_verified']) sendMail(['type'=>"token","value"=> $token], "verification", $data["email"]);
+	else if (!$user['is_verified']) { 
+		sendMail(['type'=>"token","value"=> $token], "verification", $data["email"]);
+		exit (json_encode(['success'=>false, 'message'=>'user already exists, verification email sent to '. htmlspecialchars($data['email'])]));
+	}
 	else exit (json_encode(['success'=>true, 'message'=>'user already exists']));
 }
 	if (isset($data['form'])) { 
