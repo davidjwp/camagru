@@ -1,12 +1,14 @@
 all:
-	sudo hostsed add 
+	docker compose up -d 
+	docker exec -it controller chown www-data:www-data /var/www/html/tmp
+	docker exec -it controller chown www-data:www-data /var/www/html/uploads
 
 re:
 
 clean:
-	sudo docker compose -f ./docker-compose.yml down -v 
+	docker compose -f ./docker-compose.yml down -v 
 
 fclean:
-	sudo docker system prune -af
+	docker system prune -af
 
 .PHONY: all clean fclean
