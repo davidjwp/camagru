@@ -19,6 +19,8 @@ services:
       args: 
         SERV_PORT: ${SERV_PORT}
         SERV_ADDRESS: ${SERV_ADDRESS}
+        MYSQL_USER: ${MYSQL_USER}
+        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       context: ./controller
     restart: always
     develop:

@@ -7,8 +7,8 @@
 	$token = $_GET["token"];
 	$pdo = new PDO(
 		"mysql:host=model;dbname=camagru;charset=utf8",
-		"camagru_admin",
-		"camagru_admin_pass"
+		$_SERVER['MYSQL_USER'],
+		$_SERVER['MYSQL_PASSWORD']
 	);
 
 	$stmt = $pdo->prepare("SELECT * FROM users WHERE verification_token = :token AND is_verified = 0");

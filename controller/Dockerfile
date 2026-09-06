@@ -1,10 +1,15 @@
 FROM    php:8.2-apache
 
 ARG	SERV_PORT=${SERV_PORT} 
+ARG		SERV_ADDRESS=${SERV_ADDRESS}
+ARG MYSQL_USER=${MYSQL_USER}
+ARG MYSQL_PASSWORD=${MYSQL_PASSWORD}  
 
 EXPOSE	${SERV_PORT}
 
-ARG		SERV_ADDRESS=${SERV_ADDRESS}
+
+ENV     MYSQL_USER=${MYSQL_USER}
+ENV     MYSQL_PASSWORD=${MYSQL_PASSWORD}
 
 COPY php.ini /usr/local/etc/php/conf.d/mail.ini
 COPY ssmtp.conf /etc/ssmtp/ssmtp.conf
@@ -37,5 +42,7 @@ RUN docker-php-ext-configure gd --with-jpeg
 RUN docker-php-ext-install gd pdo pdo_mysql
 RUN mkdir -p /var/www/html/uploads && chown www-data:www-data /var/www/html/uploads
 RUN mkdir -p /var/www/html/tmp && chown www-data:www-data /var/www/html/tmp
+RUN echo "SetEnv MYSQL_USER ${MYSQL_USER}" >> /etc/apache2/apache2.conf
+RUN echo "SetEnv MYSQL_PASSWORD ${MYSQL_PASSWORD}" >> /etc/apache2/apache2.conf
 
 CMD ["apache2ctl", "-D", "FOREGROUND"]

@@ -23,8 +23,8 @@
 		
 	$pdo = new PDO(
 		"mysql:host=model;dbname=camagru;charset=utf8",
-		"camagru_admin",
-		"camagru_admin_pass"
+		$_SERVER['MYSQL_USER'],
+		$_SERVER['MYSQL_PASSWORD']
 	);
 
 	$token = random_bytes(32);
