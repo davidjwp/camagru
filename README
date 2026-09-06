@@ -34,10 +34,9 @@ like.php			done/RD SQ XSS FV War/logs
 home.php			done/RD SQ XSS FV War/logs
 verify_email.php		done/RD SQ XSS FV War/logs
 functs.php			done/RD SQ XSS FV War/logs
-
-editor.php
-edit_handler.php
-upload_handler.php
+editor.php			done/RD SQ XSS FV War/logs
+edit_handler.php		done/RD SQ XSS FV War/logs
+upload_handler.php		done/RD SQ XSS FV War/logs
 
 server/client side form validation
 SQL query sanitization against injections
