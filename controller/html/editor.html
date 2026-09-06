@@ -889,8 +889,9 @@
                        img.remove();
                    });
                    sidebar.prepend(img);
-               });
-           });
+               })
+           })
+           .catch(err=>{console.log('here faggot ', err);});
 	    }
 
         //re-add canvas, remove webcamtBtn and start webcam preview

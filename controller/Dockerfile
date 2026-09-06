@@ -36,5 +36,6 @@ RUN apt-get install -y ssmtp inetutils-ping
 RUN docker-php-ext-configure gd --with-jpeg
 RUN docker-php-ext-install gd pdo pdo_mysql
 RUN mkdir -p /var/www/html/uploads && chown www-data:www-data /var/www/html/uploads
+RUN mkdir -p /var/www/html/tmp && chown www-data:www-data /var/www/html/tmp
 
 CMD ["apache2ctl", "-D", "FOREGROUND"]

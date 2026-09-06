@@ -9,7 +9,9 @@
 
     $user_tmp = '/var/www/html/tmp/' . $_SESSION['user']['id'] . '/';
     if (!is_dir($user_tmp)) {
-        mkdir($user_tmp, 0755, true);
+        error_log('CREATING A TMP DIR '. $user_tmp);
+        if (!mkdir($user_tmp, 0755, true))
+            error_log('FAILED TO CREATE TMP FILE');
         $_SESSION['tmp_dir'] = $user_tmp;
     }
 
@@ -19,6 +21,7 @@
 
     if (isset($data['csrf_token']) && $data['csrf_token'] === $_SESSION['csrf-token']) {
         if (isset($data['get_thumbs'])) {
+            error_log('HERE');
             $files = null;
             $tmp_dir = '/var/www/html/tmp/' . $_SESSION['user']['id'] . '/';
             if (is_dir($tmp_dir)) {
@@ -26,6 +29,7 @@
                 array_splice($thumbnails, 0, 2);
                 if (count($thumbnails)) $files = $thumbnails;
             }
+            ob_end_clean();
             exit (json_encode(['success'=> true,'files'=> $files, 'path' => '/tmp/'.$_SESSION['user']['id'].'/']));
         }
     
