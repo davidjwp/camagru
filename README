@@ -49,3 +49,10 @@ File upload Security (done already)
 max csrf cookie security (SameSite=Strict; Secure;)
 
 switch ALL PDO connections with env MYSQL_USER and MYSQL_PASSWORD for final sec
+
+SERV_PORT=5002
+SERV_ADDRESS=127.0.0.1
+MYSQL_ROOT_PASSWORD=camagru_admin_pass
+MYSQL_USER=camagru_admin
+MYSQL_DATABASE=camagru
+MYSQL_PASSWORD=camagru_admin_pass
