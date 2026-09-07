@@ -786,7 +786,6 @@
                 if (data.success) addThumbnail(data.file);
                 else console.log(data.error);
             })
-            .catch(err=> {console.log('what ? ', err);});
         }
 
         //loop for drawing webcam or image and sticker on top
@@ -899,7 +898,6 @@
                    sidebar.prepend(img);
                })
            })
-           .catch(err=>{console.log('here faggot ', err);});
 	    }
 
         //re-add canvas, remove webcamtBtn and start webcam preview

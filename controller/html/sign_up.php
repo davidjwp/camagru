@@ -34,7 +34,6 @@
 	$stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username OR email = :email");
 	$stmt->execute([':username' => $data["username"],':email'=> $data['email']]);
 	$user = $stmt->fetch();
-	error_log('HERE1');
 	if (!$user) {
 		$stmt = $pdo->prepare("INSERT INTO users (username, email, password, verification_token, notification) 
 		VALUES (:username, :email, :password, :token, :notification)");
@@ -45,7 +44,6 @@
 			':token' => bin2hex($token),
 			':notification'=>1
 		]);
-		error_log('HERE2');
 		sendMail(['type'=>"token","value"=> $token], "verification", $data['email']);
 		exit (json_encode(['success'=>true, 'message'=>"a verification email was sent to ".htmlspecialchars($data['email'])]));
 	}
