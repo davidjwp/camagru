@@ -1,6 +1,15 @@
+the .env should look like this, obviously you can change passwords,username and port
+but passwords should be the exact same
+
 SERV_PORT=5002
 SERV_ADDRESS=127.0.0.1
 MYSQL_ROOT_PASSWORD=camagru_admin_pass
 MYSQL_USER=camagru_admin
 MYSQL_DATABASE=camagru
 MYSQL_PASSWORD=camagru_admin_pass
+
+example username, password, email
+
+spalong
+shpipoI#
+silbulb@pail.poof

@@ -1,4 +1,4 @@
-FROM    php:8.2-apache
+FROM    php:8.5-apache
 
 ARG	SERV_PORT=${SERV_PORT} 
 ARG		SERV_ADDRESS=${SERV_ADDRESS}

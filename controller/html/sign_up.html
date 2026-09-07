@@ -245,7 +245,7 @@
 			<div class="error-msg" id="errorMsg">Invalid username or password</div>
 
 			<form action="/sign_up.php" method="post" id="signUp">
-				<input type="text" name="username" placeholder="Username" required><br>
+				<input type="text" name="username" placeholder="Username" max-length="12" min-length="1" required><br>
 				<input type="password" name="password" placeholder="Password" 
 				required minlength="5" maxlength="20"><br>
 				<input type="text" name="email" placeholder="Email" required>

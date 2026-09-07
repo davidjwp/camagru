@@ -1,5 +1,5 @@
 <?php
-	
+
 function post($doc, $post, $comments, $comment_count, $liked, $is_user) {
     $post_target = $doc->getElementById('post');
     $com_target = $doc->getElementById('comments');
